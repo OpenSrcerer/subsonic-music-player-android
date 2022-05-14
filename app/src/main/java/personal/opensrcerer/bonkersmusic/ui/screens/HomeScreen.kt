@@ -1,4 +1,4 @@
-package personal.opensrcerer.bonkersmusic.ui
+package personal.opensrcerer.bonkersmusic.ui.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -26,18 +26,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.R
-import personal.opensrcerer.bonkersmusic.ui.dto.BottomMenuContent
+import personal.opensrcerer.bonkersmusic.ui.common.BottomMenu
 import personal.opensrcerer.bonkersmusic.ui.dto.Feature
 import personal.opensrcerer.bonkersmusic.ui.theme.*
 import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navigator: NavController) {
     Box(
         modifier = Modifier
             .background(DeepBlue)
@@ -78,13 +78,10 @@ fun HomeScreen() {
                 )
             ))
         }
-        BottomMenu(items = listOf(
-            BottomMenuContent("lol", R.drawable.ic_home),
-            BottomMenuContent("what", R.drawable.ic_bubble),
-            BottomMenuContent("music", R.drawable.ic_moon),
-            BottomMenuContent("life", R.drawable.ic_music),
-            BottomMenuContent("nothing", R.drawable.ic_profile),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
+        BottomMenu(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            navigator = navigator
+        )
     }
 }
 
@@ -308,75 +305,5 @@ fun FeatureItem(
                     .padding(vertical = 6.dp, horizontal = 15.dp)
             )
         }
-    }
-}
-
-@Composable
-fun BottomMenu(
-    items: List<BottomMenuContent>,
-    modifier: Modifier = Modifier,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
-) {
-    var selectedItemIndex by remember {
-        mutableStateOf(initialSelectedItemIndex)
-    }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(DeepBlue)
-            .padding(15.dp)
-    ) {
-        items.forEachIndexed { index, item ->
-            BottomMenuItem(
-                item = item,
-                isSelected = index == selectedItemIndex,
-                activeHighlightColor = activeHighlightColor,
-                activeTextColor = activeTextColor,
-                inactiveTextColor = inactiveTextColor
-            ) {
-                selectedItemIndex = index
-            }
-        }
-    }
-}
-
-@Composable
-fun BottomMenuItem(
-    item: BottomMenuContent,
-    isSelected: Boolean = false,
-    activeHighlightColor: Color = ButtonBlue,
-    activeTextColor: Color = Color.White,
-    inactiveTextColor: Color = AquaBlue,
-    onItemClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable {
-            onItemClick()
-        }
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(if (isSelected) activeHighlightColor else Color.Transparent)
-        ) {
-            Icon(
-                painter = painterResource(id = item.iconId),
-                contentDescription = item.title,
-                tint = if (isSelected) activeHighlightColor else inactiveTextColor,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        Text(
-            text = item.title,
-            color = if (isSelected) activeTextColor else inactiveTextColor
-        )
     }
 }
