@@ -10,7 +10,9 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import personal.opensrcerer.bonkersmusic.ui.screens.BrowseScreen
+import personal.opensrcerer.bonkersmusic.ui.screens.ExploreScreen
 import personal.opensrcerer.bonkersmusic.ui.screens.HomeScreen
+import personal.opensrcerer.bonkersmusic.ui.screens.ServerScreen
 import personal.opensrcerer.bonkersmusic.ui.theme.BonkersMusicClientTheme
 
 @ExperimentalFoundationApi
@@ -21,12 +23,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             BonkersMusicClientTheme {
                 val navController = rememberNavController()
+
                 NavHost(navController, startDestination = "home") {
                     composable(route = "home") {
                         HomeScreen(navController)
                     }
                     composable(route = "browse") {
                         BrowseScreen(navController)
+                    }
+                    composable(route = "explore") {
+                        ExploreScreen(navController)
+                    }
+                    composable(route = "server") {
+                        ServerScreen(navController)
                     }
                 }
             }

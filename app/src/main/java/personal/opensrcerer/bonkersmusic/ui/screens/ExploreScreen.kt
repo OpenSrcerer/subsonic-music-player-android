@@ -5,10 +5,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,44 +21,59 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
+import personal.opensrcerer.bonkersmusic.ui.common.TopBar
 import personal.opensrcerer.bonkersmusic.ui.dto.Feature
 import personal.opensrcerer.bonkersmusic.ui.theme.*
 import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(navigator: NavController) {
+fun ExploreScreen(navigator: NavController) {
+
     Scaffold(
-        topBar = { },
+        topBar = { TopBar(navigator = navigator) },
         content = {
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .background(DeepBlue)
-            )
-            Column {
-                CurrentlyPlayingCover(
+            ) {
+                ChipSection(chips = listOf("Rock", "Metal", "Pop"))
+                FeatureSection(features = listOf(
                     Feature(
                         title = "What Would You Have Me Do?",
                         R.drawable.ic_headphone,
                         BlueViolet1,
                         BlueViolet2,
                         BlueViolet3
+                    ),
+                    Feature(
+                        title = "buy some weed",
+                        R.drawable.ic_videocam,
+                        LightGreen1,
+                        LightGreen2,
+                        LightGreen3
+                    ),
+                    Feature(
+                        title = "fuck off",
+                        R.drawable.ic_headphone,
+                        OrangeYellow1,
+                        OrangeYellow2,
+                        OrangeYellow3
+                    ),
+                    Feature(
+                        title = "drink mountain dew",
+                        R.drawable.ic_headphone,
+                        Beige1,
+                        Beige2,
+                        Beige3
                     )
-                )
-                CurrentlyPlayingText(
-                    "What Would You Have Me Do?",
-                    "Here Comes The Zoo",
-                    "Local H"
-                )
-                SliderControls()
-                ButtonControls(buttons = listOf("PP", "P2", "Etc", "ff", "fr"))
+                ))
             }
         },
         bottomBar = { BottomBar(navigator = navigator) }
@@ -61,12 +81,69 @@ fun HomeScreen(navigator: NavController) {
 }
 
 @Composable
-fun CurrentlyPlayingCover(
+fun ChipSection(
+    chips: List<String>
+) {
+    Text(
+        text = "Genres",
+        style = MaterialTheme.typography.h1,
+        modifier = Modifier.padding(15.dp)
+    )
+
+    var selectedChipIndex by remember {
+        mutableStateOf(0)
+    }
+    LazyRow {
+        items(chips.size) {
+            Box(contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(start = 15.dp, bottom = 15.dp)
+                    .clickable {
+                        selectedChipIndex = it
+                    }
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        if (selectedChipIndex == it) ButtonBlue
+                        else DarkerButtonBlue
+                    )
+                    .padding(15.dp)
+            ) {
+                Text(text = chips[it], color = TextWhite)
+            }
+        }
+    }
+}
+
+@ExperimentalFoundationApi
+@Composable
+fun FeatureSection(
+    features: List<Feature>
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "Play Again",
+            style = MaterialTheme.typography.h1,
+            modifier = Modifier.padding(15.dp)
+        )
+    }
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(2),
+        contentPadding = PaddingValues(start = 7.5.dp, end = 7.5.dp, bottom = 100.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(features.size) {
+            FeatureItem(feature = features[it])
+        }
+    }
+}
+
+@Composable
+fun FeatureItem(
     feature: Feature
 ) {
     BoxWithConstraints(
         modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp)
+            .padding(7.5.dp)
             .aspectRatio(1f)
             .clip(RoundedCornerShape(10.dp))
             .background(feature.darkColor)
@@ -122,94 +199,37 @@ fun CurrentlyPlayingCover(
                 color = feature.lightColor
             )
         }
-    }
-}
-
-@Composable
-fun CurrentlyPlayingText(
-    currentSongTitle: String,
-    currentSongAlbum: String,
-    currentSongArtist: String
-) {
-    BoxWithConstraints(
-        modifier = Modifier
-            .padding(top = 20.dp)
-            .fillMaxWidth()
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
             modifier = Modifier
-                .align(Alignment.Center)
-                .padding(bottom = 70.dp)
+                .fillMaxSize()
+                .padding(15.dp)
         ) {
             Text(
-                text = currentSongTitle,
-                style = MaterialTheme.typography.h1,
-                lineHeight = 26.sp,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "$currentSongAlbum - $currentSongArtist",
+                text = feature.title,
                 style = MaterialTheme.typography.h2,
-                lineHeight = 26.sp
+                lineHeight = 26.sp,
+                modifier = Modifier.align(Alignment.TopStart)
             )
-        }
-    }
-}
-
-@Composable
-fun SliderControls() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp)
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "0:00",
-                        style = MaterialTheme.typography.h2,
-                        lineHeight = 12.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "3:00",
-                        style = MaterialTheme.typography.h2,
-                        lineHeight = 12.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Slider(value = 0.5f, onValueChange = { })
-            }
-        }
-    }
-}
-
-@Composable
-fun ButtonControls(buttons: List<String>) {
-    BoxWithConstraints(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp)
-            .fillMaxWidth()
-    ) {
-        LazyRow {
-            items(buttons.size) {
-                Box(modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp)
-                    .clickable { }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_headphone),
-                        contentDescription = "Test",
-                        tint = Color.White
-                    )
-                }
-            }
+            Icon(
+                painter = painterResource(id = feature.iconId),
+                contentDescription = feature.title,
+                tint = Color.White,
+                modifier = Modifier.align(Alignment.BottomStart)
+            )
+            Text(
+                text = "Start",
+                color = TextWhite,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clickable {
+                        // Handle click
+                    }
+                    .align(Alignment.BottomEnd)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(ButtonBlue)
+                    .padding(vertical = 6.dp, horizontal = 15.dp)
+            )
         }
     }
 }

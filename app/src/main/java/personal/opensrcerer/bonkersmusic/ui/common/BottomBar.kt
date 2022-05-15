@@ -14,49 +14,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import personal.opensrcerer.bonkersmusic.R
-import personal.opensrcerer.bonkersmusic.ui.dto.BottomMenuButton
+import personal.opensrcerer.bonkersmusic.ui.dto.BottomBarButton
 import personal.opensrcerer.bonkersmusic.ui.theme.AquaBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
+import personal.opensrcerer.bonkersmusic.ui.theme.DarkerDeepBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
 
 @Composable
-fun BottomMenu(
+fun BottomBar(
     modifier: Modifier = Modifier,
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0,
     navigator: NavController
 ) {
-    var selectedItemIndex by remember {
-        mutableStateOf(initialSelectedItemIndex)
-    }
+    val backStackEntry by navigator.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(DeepBlue)
+            .background(DarkerDeepBlue)
             .padding(15.dp)
     ) {
-        BottomMenuItems(navigator).forEachIndexed { index, item ->
-            BottomMenuItem(
+        bottomMenuItems().forEach() { item ->
+            BottomBarItem(
                 item = item,
-                isSelected = index == selectedItemIndex,
+                isSelected = currentRoute.equals(item.navRoute),
                 activeHighlightColor = activeHighlightColor,
                 activeTextColor = activeTextColor,
                 inactiveTextColor = inactiveTextColor
             ) {
-                selectedItemIndex = index
+                navigator.navigate(item.navRoute)
             }
         }
     }
 }
 
 @Composable
-fun BottomMenuItem(
-    item: BottomMenuButton,
+fun BottomBarItem(
+    item: BottomBarButton,
     isSelected: Boolean = false,
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
@@ -68,7 +69,6 @@ fun BottomMenuItem(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.clickable {
             onItemClick()
-            item.navAction()
         }
     ) {
         Box(
@@ -91,12 +91,11 @@ fun BottomMenuItem(
     }
 }
 
-fun BottomMenuItems(navigator: NavController): List<BottomMenuButton> {
+fun bottomMenuItems(): List<BottomBarButton> {
     return listOf(
-        BottomMenuButton("Home", R.drawable.ic_home) { navigator.navigate("home") },
-        BottomMenuButton("Browse", R.drawable.ic_bubble) { navigator.navigate("browse") },
-        BottomMenuButton("music", R.drawable.ic_moon) { navigator.navigate("home") },
-        BottomMenuButton("life", R.drawable.ic_music) { navigator.navigate("home") },
-        BottomMenuButton("nothing", R.drawable.ic_profile) { navigator.navigate("home") },
+        BottomBarButton("Home", R.drawable.ic_home, "home"),
+        BottomBarButton("Browse", R.drawable.ic_bubble, "browse"),
+        BottomBarButton("Explore", R.drawable.ic_moon, "explore"),
+        BottomBarButton("Server", R.drawable.ic_music, "server")
     )
 }
