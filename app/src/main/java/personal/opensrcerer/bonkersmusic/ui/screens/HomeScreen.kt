@@ -23,8 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.server.client.SubsonicService
-import personal.opensrcerer.bonkersmusic.server.requests.RequestUtils.searchForSingleSong
-import personal.opensrcerer.bonkersmusic.server.responses.entities.Song
+import personal.opensrcerer.bonkersmusic.server.requests.browsing.IndexesRequest
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.dto.Feature
 import personal.opensrcerer.bonkersmusic.ui.theme.*
@@ -210,14 +209,12 @@ fun ButtonControls(buttons: List<String>) {
                     .padding(start = 20.dp, end = 20.dp)
                     .clickable {
                         SubsonicService
-                            .request(searchForSingleSong("what would you have me do"))
+                            .request(IndexesRequest())
                             .timeout(Duration.of(3000, ChronoUnit.MILLIS))
-                            .mapNotNull { result3 ->
-                                val songs: Array<Song> = result3.getSongs() ?: emptyArray()
-                                songs[0]
-                            }
                             .doOnCancel { /*timeout handling*/ }
-                            .subscribe { song -> Log.i("song", song.title) }
+                            .subscribe { indexes -> Log.i("indexes",
+                                indexes.getIndexes()?.size.toString()
+                            ) }
                     }
                 ) {
                     Icon(

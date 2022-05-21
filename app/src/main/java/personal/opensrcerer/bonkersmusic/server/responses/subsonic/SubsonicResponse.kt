@@ -1,24 +1,41 @@
 package personal.opensrcerer.bonkersmusic.server.responses.subsonic
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
+@Root(name = "subsonic-response")
 open class SubsonicResponse {
-    val status: String = ""
-    val version: String = ""
-    val type: String = ""
-    val serverVersion: String = ""
-    val xmlns: String = ""
-    val error: SubsonicError? = null
+    @field:Attribute(name = "status", required = false)
+    var status: String? = ""
+
+    @field:Attribute(name = "version", required = false)
+    var version: String? = ""
+
+    @field:Attribute(name = "type", required = false)
+    var type: String? = ""
+
+    @field:Attribute(name = "serverVersion", required = false)
+    var serverVersion: String? = ""
+
+    @field:Attribute(name = "xmlns", required = false)
+    var xmlns: String? = ""
+
+    @field:Element(name = "error", required = false)
+    var error: SubsonicError? = null
+
     private var requestTime: Long = 0
 
-    class SubsonicError @JsonCreator constructor(
-        @JsonProperty("code") val code: Int,
-        @JsonProperty("message") val message: String
-    )
+    class SubsonicError {
+        @field:Attribute(name = "error", required = false)
+        var code: Int = -1
 
-    fun setTime(t: Long) {
-        requestTime = t
+        @field:Attribute(name = "error", required = false)
+        var message: String = ""
+    }
+
+    fun setTime(time: Long) {
+        requestTime = time
     }
 
     fun getTime() : Long {

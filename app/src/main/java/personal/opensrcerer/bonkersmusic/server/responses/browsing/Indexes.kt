@@ -1,60 +1,72 @@
 package personal.opensrcerer.bonkersmusic.server.responses.browsing
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
+import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.entities.Artist
 import personal.opensrcerer.bonkersmusic.server.responses.entities.Song
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicResponse
 
-class Indexes : SubsonicResponse() {
+class Indexes(
+    @param:Element(name = "indexes")
+    @get:Element(name = "indexes")
+    val indexes: IndexesData
+) : SubsonicResponse() {
 
-    @JacksonXmlElementWrapper
-    private val indexes: IndexesData? = null
+    @Root(name = "indexes")
+    data class IndexesData @JvmOverloads constructor(
+        @param:Attribute(name = "lastModified")
+        @get:Attribute(name = "lastModified")
+        val lastModified: String?,
 
-    data class IndexesData @JsonCreator constructor(
-        @JsonProperty("lastModified")
-        private val lastModified: String?,
+        @param:Attribute(name = "ignoredArticles")
+        @get:Attribute(name = "ignoredArticles")
+        val ignoredArticles: String?,
 
-        @JsonProperty("ignoredArticles")
-        private val ignoredArticles: String?,
+        @param:ElementList(entry = "child", inline = true, required = false)
+        @get:ElementList(entry = "child", inline = true, required = false)
+        val children: List<Song>? = null,
 
-        @JsonProperty("child")
-        @JacksonXmlElementWrapper(useWrapping = false)
-        val children: Array<Song>? = null,
+        @param:ElementList(entry = "shortcut", inline = true, required = false)
+        @get:ElementList(entry = "shortcut", inline = true, required = false)
+        val shortcuts: List<Shortcut>? = null,
 
-        @JsonProperty("shortcut")
-        @JacksonXmlElementWrapper(useWrapping = false)
-        val shortcuts: Array<Shortcut>? = null,
-
-        @JsonProperty("index")
-        @JacksonXmlElementWrapper(useWrapping = false)
+        @param:ElementList(entry = "index", inline = true)
+        @get:ElementList(entry = "index", inline = true)
         val indexes: Set<Index>? = null
     )
 
     data class Shortcut(
+        @param:Attribute(name = "id")
+        @get:Attribute(name = "id")
         val id: Long,
+
+        @param:Attribute(name = "name")
+        @get:Attribute(name = "name")
         val name: String
     )
 
-    data class Index @JsonCreator constructor(
-        @JsonProperty("name")
+    @Root(name = "index")
+    data class Index constructor(
+        @param:Attribute(name = "name")
+        @get:Attribute(name = "name")
         val name: String,
 
-        @JsonProperty("artist")
-        @JacksonXmlElementWrapper(useWrapping = false)
-        val artists: Array<Artist>?
+        @param:ElementList(entry = "artist", inline = true)
+        @get:ElementList(entry = "artist", inline = true)
+        val artists: List<Artist>?
     )
 
-    fun getChildren(): Array<Song>? {
-        return this.indexes?.children
+    fun getChildren(): List<Song>? {
+        return this.indexes.children
     }
 
-    fun getShortcuts(): Array<Shortcut>? {
-        return this.indexes?.shortcuts
+    fun getShortcuts(): List<Shortcut>? {
+        return this.indexes.shortcuts
     }
 
-    fun getIndex(): Set<Index>? {
-        return this.indexes?.indexes
+    fun getIndexes(): Set<Index>? {
+        return this.indexes.indexes
     }
 }

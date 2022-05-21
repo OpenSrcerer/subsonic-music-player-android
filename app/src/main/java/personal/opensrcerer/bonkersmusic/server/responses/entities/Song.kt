@@ -1,59 +1,94 @@
 package personal.opensrcerer.bonkersmusic.server.responses.entities
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 import personal.opensrcerer.bonkersmusic.ui.dto.EmbeddableEntity
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class Song(
-    @JsonProperty("id")                    id: String?,
-    @JsonProperty("parent")                parent: String?,
-    @JsonProperty("title")                 title: String?,
-    @JsonProperty("isDir")                 isDir: String?,
-    @JsonProperty("isVideo")               isVideo: String?,
-    @JsonProperty("album")                 album: String?,
-    @JsonProperty("artist")                artist: String?,
-    @JsonProperty("track")                 track: String?,
-    @JsonProperty("year")                  year: String?,
-    @JsonProperty("genre")                 genre: String?,
-    @JsonProperty("coverArt")              coverArt: String?,
-    @JsonProperty("size")                  size: String?,
-    @JsonProperty("contentType")           contentType: String?,
-    @JsonProperty("suffix")                suffix: String?,
-    @JsonProperty("transcodedContentType") transcodedContentType: String?,
-    @JsonProperty("transcodedSuffix")      transcodedSuffix: String?,
-    @JsonProperty("duration")              duration: String?,
-    @JsonProperty("bitRate")               bitrate: String?,
-    @JsonProperty("path")                  path: String?
+@Root(name = "song")
+class Song @JvmOverloads constructor(
+    @param:Attribute(name = "id")
+    @get:Attribute(name = "id")
+    val id: String = Unknown.ID.value,
+
+    @param:Attribute(name = "parent", required = false)
+    @get:Attribute(name = "parent", required = false)
+    val parent: String? = Unknown.PARENT.value,
+
+    @param:Attribute(name = "title", required = false)
+    @get:Attribute(name = "title", required = false)
+    val title: String? = Unknown.TITLE.value,
+
+    @param:Attribute(name = "isDir", required = false)
+    @get:Attribute(name = "isDir", required = false)
+    val isDir: String? = Unknown.IS_DIRECTORY.value,
+
+    @param:Attribute(name = "isVideo", required = false)
+    @get:Attribute(name = "isVideo", required = false)
+    val isVideo: String? = Unknown.IS_VIDEO.value,
+
+    @param:Attribute(name = "album", required = false)
+    @get:Attribute(name = "album", required = false)
+    val album: String? = Unknown.ALBUM.value,
+
+    @param:Attribute(name = "artist", required = false)
+    @get:Attribute(name = "artist", required = false)
+    val artist: String? = Unknown.ARTIST.value,
+
+    @param:Attribute(name = "track", required = false)
+    @get:Attribute(name = "track", required = false)
+    val track: String? = Unknown.TRACK.value,
+
+    @param:Attribute(name = "year", required = false)
+    @get:Attribute(name = "year", required = false)
+    val year: String? = Unknown.YEAR.value,
+
+    @param:Attribute(name = "genre", required = false)
+    @get:Attribute(name = "genre", required = false)
+    val genre: String? = Unknown.GENRE.value,
+
+    @param:Attribute(name = "coverArt", required = false)
+    @get:Attribute(name = "coverArt", required = false)
+    val coverArt: String? = Unknown.COVER_ART.value,
+
+    @param:Attribute(name = "size", required = false)
+    @get:Attribute(name = "size", required = false)
+    val size: String? = Unknown.SIZE.value,
+
+    @param:Attribute(name = "contentType", required = false)
+    @get:Attribute(name = "contentType", required = false)
+    val contentType: String? = Unknown.CONTENT_TYPE.value,
+
+    @param:Attribute(name = "suffix", required = false)
+    @get:Attribute(name = "suffix", required = false)
+    val suffix: String? = Unknown.SUFFIX.value,
+
+    @param:Attribute(name = "transcodedContentType", required = false)
+    @get:Attribute(name = "transcodedContentType", required = false)
+    val transcodedContentType: String? = Unknown.TRANSCODED_CONTENT_TYPE.value,
+
+    @param:Attribute(name = "transcodedSuffix", required = false)
+    @get:Attribute(name = "transcodedSuffix", required = false)
+    val transcodedSuffix: String? = Unknown.TRANSCODED_SUFFIX.value,
+
+    @param:Attribute(name = "duration", required = false)
+    @get:Attribute(name = "duration", required = false)
+    val duration: String? = Unknown.DURATION.value,
+
+    @param:Attribute(name = "bitrate", required = false)
+    @get:Attribute(name = "bitrate", required = false)
+    val bitrate: String? = Unknown.BITRATE.value,
+
+    @param:Attribute(name = "path", required = false)
+    @get:Attribute(name = "path", required = false)
+    val path: String? = Unknown.PATH.value
 ) : EmbeddableEntity {
-
-    val id = id ?: Unknown.ID.value
-    val parent = parent ?: Unknown.PARENT.value
-    val title = title ?: Unknown.TITLE.value
-    val isDir = isDir ?: Unknown.IS_DIRECTORY.value
-    val isVideo = isVideo ?: Unknown.IS_VIDEO.value
-    val album = album ?: Unknown.ALBUM.value
-    val artist = artist ?: Unknown.ARTIST.value
-    val track = track ?: Unknown.TRACK.value
-    val year = year ?: Unknown.YEAR.value
-    val genre = genre ?: Unknown.GENRE.value
-    val coverArt = coverArt ?: Unknown.COVER_ART.value
-    val size = size ?: Unknown.SIZE.value
-    val contentType = contentType ?: Unknown.CONTENT_TYPE.value
-    val suffix = suffix ?: Unknown.SUFFIX.value
-    val transcodedContentType = transcodedContentType ?: Unknown.TRANSCODED_CONTENT_TYPE.value
-    val transcodedSuffix = transcodedSuffix ?: Unknown.TRANSCODED_SUFFIX.value
-    val duration = duration ?: Unknown.DURATION.value
-    val bitrate = bitrate ?: Unknown.BITRATE.value
-    val path = path ?: Unknown.PATH.value
-
     override fun id(): String {
         return id
     }
 
     override fun embedName(): String {
-        return title
+        return title ?: Unknown.TITLE.name
     }
 
     override fun embedValue(): String {

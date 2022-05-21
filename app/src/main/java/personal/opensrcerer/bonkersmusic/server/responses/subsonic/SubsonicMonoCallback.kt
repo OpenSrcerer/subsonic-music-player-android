@@ -1,11 +1,13 @@
 package personal.opensrcerer.bonkersmusic.server.responses.subsonic
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
+import org.simpleframework.xml.core.Persister
 import reactor.core.publisher.MonoSink
 import java.io.IOException
+import java.io.Reader
+import java.io.StringReader
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -41,13 +43,18 @@ class SubsonicMonoCallback<T>(
     }
 
     private companion object {
-        private val xmlMapper = XmlMapper()
+        val mapper = Persister()
 
         fun <T> parse(
             clazz: Class<T>,
             xml: String
-        ) : T {
-            return xmlMapper.readValue(xml, clazz)
+        ): T {
+            val xmlReader: Reader = StringReader(xml)
+            return mapper.read(
+                clazz,
+                xmlReader,
+                false
+            )
         }
     }
 }

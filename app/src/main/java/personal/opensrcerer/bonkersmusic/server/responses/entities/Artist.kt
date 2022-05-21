@@ -1,25 +1,26 @@
 package personal.opensrcerer.bonkersmusic.server.responses.entities
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 import personal.opensrcerer.bonkersmusic.ui.dto.EmbeddableEntity
-import java.util.*
 
-class Artist (
-    @JsonProperty("id")      id: String?,
-    @JsonProperty("name")    name: String?,
-    @JsonProperty("starred") val starred: Date?
+@Root(name = "artist")
+class Artist @JvmOverloads constructor(
+    @param:Attribute(name = "id")
+    @get:Attribute(name = "id")
+    val id: String = Unknown.ID.value,
+
+    @param:Attribute(name = "name", required = false)
+    @get:Attribute(name = "name", required = false)
+    val name: String? = Unknown.ARTIST_NAME.value,
 ) : EmbeddableEntity {
-
-    val id = id ?: Unknown.ID.value
-    val name = name ?: Unknown.ARTIST_NAME.value
-
     override fun id(): String {
         return id
     }
 
     override fun embedName(): String {
-        return name
+        return name ?: Unknown.ARTIST_NAME.name
     }
 
     override fun embedValue(): String {

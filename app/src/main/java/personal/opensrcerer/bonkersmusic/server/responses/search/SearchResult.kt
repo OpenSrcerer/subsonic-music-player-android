@@ -7,11 +7,11 @@ import personal.opensrcerer.bonkersmusic.server.responses.entities.Song
 
 sealed interface SearchResult {
     @Nullable
-    fun getSongs() : Array<Song>?
+    fun getSongs() : List<Song>?
 
     @Nullable
-    fun getArtists() : Array<Artist>?
+    fun getArtists() : List<Artist>?
 
     @Nullable
-    fun getAlbums() : Array<Album>?
+    fun getAlbums() : List<Album>?
 }
