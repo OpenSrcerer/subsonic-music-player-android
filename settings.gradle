@@ -10,6 +10,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            // CUTR SNAPSHOTs
+            url "https://github.com/CUTR-at-USF/cutr-mvn-repo/raw/master/snapshots"
+        }
+        maven {
+            // CUTR Releases
+            url "https://github.com/CUTR-at-USF/cutr-mvn-repo/raw/master/releases"
+        }
     }
 }
 rootProject.name = "BonkersMusic"
