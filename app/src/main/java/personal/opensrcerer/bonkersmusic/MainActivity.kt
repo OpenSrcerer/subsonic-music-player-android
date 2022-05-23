@@ -9,6 +9,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import personal.opensrcerer.bonkersmusic.ui.models.BrowseScreenModel
 import personal.opensrcerer.bonkersmusic.ui.screens.BrowseScreen
 import personal.opensrcerer.bonkersmusic.ui.screens.ExploreScreen
 import personal.opensrcerer.bonkersmusic.ui.screens.HomeScreen

@@ -6,6 +6,7 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.entities.Artist
 import personal.opensrcerer.bonkersmusic.server.responses.entities.Song
+import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicResponse
 
 class Indexes(
@@ -34,8 +35,12 @@ class Indexes(
 
         @param:ElementList(entry = "index", inline = true)
         @get:ElementList(entry = "index", inline = true)
-        val indexes: Set<Index>? = null
-    )
+        var indexes: Set<Index>? = null
+    ) {
+        init {
+            indexes = indexes?.sortedBy { e -> e.name }?.toSet()
+        }
+    }
 
     data class Shortcut(
         @param:Attribute(name = "id")
@@ -55,7 +60,7 @@ class Indexes(
 
         @param:ElementList(entry = "artist", inline = true)
         @get:ElementList(entry = "artist", inline = true)
-        val artists: List<Artist>?
+        val artists: List<Artist>
     )
 
     fun getChildren(): List<Song>? {
@@ -68,5 +73,19 @@ class Indexes(
 
     fun getIndexes(): Set<Index>? {
         return this.indexes.indexes
+    }
+
+    companion object {
+        fun empty(): Indexes {
+            return Indexes(
+                IndexesData(
+                    Unknown.DATE.value,
+                    Unknown.UNKNOWN.value,
+                    emptyList(),
+                    emptyList(),
+                    emptySet()
+                )
+            )
+        }
     }
 }

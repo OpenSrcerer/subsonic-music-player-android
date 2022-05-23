@@ -1,6 +1,5 @@
 package personal.opensrcerer.bonkersmusic.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,19 +21,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.R
-import personal.opensrcerer.bonkersmusic.server.client.SubsonicService
-import personal.opensrcerer.bonkersmusic.server.requests.browsing.IndexesRequest
+import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
+import personal.opensrcerer.bonkersmusic.server.requests.RequestUtils
+import personal.opensrcerer.bonkersmusic.server.requests.media.StreamRequest
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.dto.Feature
-import personal.opensrcerer.bonkersmusic.ui.theme.*
+import personal.opensrcerer.bonkersmusic.ui.models.HomeScreenModel
+import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet1
+import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet2
+import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet3
+import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
+import personal.opensrcerer.bonkersmusic.ui.util.Scheduler
 import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
-import java.time.Duration
-import java.time.temporal.ChronoUnit
 
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(navigator: NavController) {
+fun HomeScreen(
+    navigator: NavController,
+    model: HomeScreenModel = HomeScreenModel.getHomeModel()
+) {
     Scaffold(
         topBar = { },
         content = {
@@ -54,12 +60,15 @@ fun HomeScreen(navigator: NavController) {
                     )
                 )
                 CurrentlyPlayingText(
-                    "What Would You Have Me Do?",
-                    "Here Comes The Zoo",
-                    "Local H"
+                    "Lie",
+                    "Awake",
+                    "Dream Theater"
                 )
-                SliderControls()
-                ButtonControls(buttons = listOf("PP", "P2", "Etc", "ff", "fr"))
+                SliderControls(model)
+                ButtonControls(
+                    model = model,
+                    buttons = listOf("PP")
+                )
             }
         },
         bottomBar = { BottomBar(navigator = navigator) }
@@ -164,7 +173,7 @@ fun CurrentlyPlayingText(
 }
 
 @Composable
-fun SliderControls() {
+fun SliderControls(model: HomeScreenModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -178,26 +187,33 @@ fun SliderControls() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "0:00",
+                        text = "${model.minutesIn.value()}:${model.secondsIn.value()}",
                         style = MaterialTheme.typography.h2,
                         lineHeight = 12.sp,
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "3:00",
+                        text = "-${model.minutesOut.value()}:${model.secondsOut.value()}",
                         style = MaterialTheme.typography.h2,
                         lineHeight = 12.sp,
                         textAlign = TextAlign.Center
                     )
                 }
-                Slider(value = 0.5f, onValueChange = { })
+                Slider(
+                    value = model.sliderPos.value(),
+                    valueRange = 0f..1f,
+                    onValueChange = { model.sliderPos to it }
+                )
             }
         }
     }
 }
 
 @Composable
-fun ButtonControls(buttons: List<String>) {
+fun ButtonControls(
+    model: HomeScreenModel,
+    buttons: List<String>
+) {
     BoxWithConstraints(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp)
@@ -205,20 +221,19 @@ fun ButtonControls(buttons: List<String>) {
     ) {
         LazyRow {
             items(buttons.size) {
-                Box(modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp)
-                    .clickable {
-                        SubsonicService
-                            .request(IndexesRequest())
-                            .timeout(Duration.of(3000, ChronoUnit.MILLIS))
-                            .doOnCancel { /*timeout handling*/ }
-                            .subscribe { indexes -> Log.i("indexes",
-                                indexes.getIndexes()?.size.toString()
-                            ) }
-                    }
+                Box(
+                    modifier = Modifier
+                        .padding(start = 160.dp, end = 20.dp)
+                        .clickable {
+                            val url = RequestUtils.getUrl(StreamRequest(
+                                "1793", "320"
+                            )).toString()
+                            AudioPlayerService.play(url)
+                            model.onSongPlayed()
+                        }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_headphone),
+                        painter = painterResource(id = R.drawable.ic_play),
                         contentDescription = "Test",
                         tint = Color.White
                     )

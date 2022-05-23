@@ -1,10 +1,10 @@
-package personal.opensrcerer.bonkersmusic.server.db
+package personal.opensrcerer.bonkersmusic.db
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import personal.opensrcerer.bonkersmusic.server.db.dto.SubsonicServer
-import personal.opensrcerer.bonkersmusic.server.db.contracts.SubsonicServerContract.ServerEntry
+import personal.opensrcerer.bonkersmusic.db.dto.SubsonicServer
+import personal.opensrcerer.bonkersmusic.db.contracts.SubsonicServerContract.ServerEntry
 
 class ServerDbClient(
     context: Context,

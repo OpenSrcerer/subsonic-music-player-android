@@ -20,7 +20,7 @@ object RequestUtils {
             .addPathSegment("rest")
             .addPathSegment(req.path.toString())
         addConfigParams(builder, config)
-        req.queryParams.forEach{ e -> builder.addQueryParameter(e.key, e.value.toString()) }
+        req.queryParams.forEach { entry -> builder.addQueryParameter(entry.key, entry.value.toString()) }
         return builder.build()
     }
 

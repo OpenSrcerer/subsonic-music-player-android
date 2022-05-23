@@ -1,6 +1,7 @@
 package personal.opensrcerer.bonkersmusic.server.responses.enum
 
 enum class Unknown(val value: String) {
+    UNKNOWN("Unknown"),
     ID("Unknown ID"),
     PARENT("Unknown Parent"),
     TITLE("Unknown Title"),
@@ -20,7 +21,8 @@ enum class Unknown(val value: String) {
     TRANSCODED_SUFFIX("Unknown Transcoded Suffix"),
     DURATION("Unknown Duration"),
     BITRATE("Unknown Bitrate"),
-    PATH("Unknown Path");
+    PATH("Unknown Path"),
+    DATE("Unknown Date");
 
     override fun toString(): String {
         return value

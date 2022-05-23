@@ -20,7 +20,6 @@ import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
 
 @Composable
 fun ServerScreen(navigator: NavController) {
-
     Scaffold(
         topBar = { TopBar(navigator = navigator) },
         content = {

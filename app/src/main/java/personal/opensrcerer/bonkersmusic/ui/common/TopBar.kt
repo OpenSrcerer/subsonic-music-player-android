@@ -14,13 +14,12 @@ import personal.opensrcerer.bonkersmusic.ui.theme.DarkerDeepBlue
 
 @Composable
 fun TopBar(
-    modifier: Modifier = Modifier,
     navigator: NavController
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .background(DarkerDeepBlue)
             .padding(15.dp)

@@ -1,4 +1,4 @@
-package personal.opensrcerer.bonkersmusic.ui.dto
+package personal.opensrcerer.bonkersmusic.server.responses.entities
 
 interface EmbeddableEntity {
     fun id(): String

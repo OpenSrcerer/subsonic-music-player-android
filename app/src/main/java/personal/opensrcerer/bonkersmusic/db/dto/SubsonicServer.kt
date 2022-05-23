@@ -1,4 +1,4 @@
-package personal.opensrcerer.bonkersmusic.server.db.dto
+package personal.opensrcerer.bonkersmusic.db.dto
 
 data class SubsonicServer(
     val id: Int = 1,

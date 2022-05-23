@@ -20,7 +20,6 @@ import personal.opensrcerer.bonkersmusic.ui.dto.BottomBarButton
 import personal.opensrcerer.bonkersmusic.ui.theme.AquaBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DarkerDeepBlue
-import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
 
 @Composable
 fun BottomBar(
@@ -41,7 +40,7 @@ fun BottomBar(
             .background(DarkerDeepBlue)
             .padding(15.dp)
     ) {
-        bottomMenuItems().forEach() { item ->
+        bottomMenuItems().forEach { item ->
             BottomBarItem(
                 item = item,
                 isSelected = currentRoute.equals(item.navRoute),

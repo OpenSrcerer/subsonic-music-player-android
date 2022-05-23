@@ -1,4 +1,4 @@
-package personal.opensrcerer.bonkersmusic.server.db.contracts
+package personal.opensrcerer.bonkersmusic.db.contracts
 
 import android.provider.BaseColumns
 

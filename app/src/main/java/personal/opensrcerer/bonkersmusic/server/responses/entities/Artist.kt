@@ -3,7 +3,6 @@ package personal.opensrcerer.bonkersmusic.server.responses.entities
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
-import personal.opensrcerer.bonkersmusic.ui.dto.EmbeddableEntity
 
 @Root(name = "artist")
 class Artist @JvmOverloads constructor(
