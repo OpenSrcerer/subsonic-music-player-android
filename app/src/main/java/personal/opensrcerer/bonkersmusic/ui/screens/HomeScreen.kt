@@ -34,7 +34,6 @@ import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
 import personal.opensrcerer.bonkersmusic.ui.util.Scheduler
 import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
 
-
 @ExperimentalFoundationApi
 @Composable
 fun HomeScreen(
