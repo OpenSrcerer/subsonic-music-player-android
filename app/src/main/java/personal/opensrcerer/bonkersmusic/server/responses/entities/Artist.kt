@@ -5,7 +5,7 @@ import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 
 @Root(name = "artist")
-class Artist @JvmOverloads constructor(
+data class Artist @JvmOverloads constructor(
     @param:Attribute(name = "id")
     @get:Attribute(name = "id")
     val id: String = Unknown.ID.value,

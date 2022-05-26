@@ -35,7 +35,7 @@ object RequestUtils {
         builder.host(config.host)
             .port(config.port)
             .addQueryParameter("v", config.version)
-            .addQueryParameter("c", "supersonic-bot")
+            .addQueryParameter("c", "android-client")
         addCredentials(builder, config, true)
     }
 

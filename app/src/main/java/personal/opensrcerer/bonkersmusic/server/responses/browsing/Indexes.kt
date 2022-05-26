@@ -9,7 +9,7 @@ import personal.opensrcerer.bonkersmusic.server.responses.entities.Song
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicResponse
 
-class Indexes(
+data class Indexes(
     @param:Element(name = "indexes")
     @get:Element(name = "indexes")
     val indexes: IndexesData
@@ -53,7 +53,7 @@ class Indexes(
     )
 
     @Root(name = "index")
-    data class Index constructor(
+    data class Index(
         @param:Attribute(name = "name")
         @get:Attribute(name = "name")
         val name: String,

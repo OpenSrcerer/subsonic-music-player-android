@@ -16,7 +16,7 @@ class HomeScreenModel : ViewModel() {
     val secondsOut = Stateable("00")
     val sliderPos = Stateable(0f)
 
-    fun onSongPlayed() {
+    fun onPlayJob() {
         scheduledJob = Scheduler.executor.scheduleAtFixedRate(
             { setStateables(AudioPlayerService.getAudioData()) },
             1000,
@@ -25,12 +25,16 @@ class HomeScreenModel : ViewModel() {
         )
     }
 
+    fun onPause() {
+        scheduledJob?.cancel(true)
+    }
+
     private fun setStateables(trackInfo: TrackPositionInfo) {
-        this.minutesIn to trackInfo.minutesIn
-        this.minutesOut to trackInfo.minutesOut
-        this.secondsIn to trackInfo.secondsIn
-        this.secondsOut to trackInfo.secondsOut
-        this.sliderPos to trackInfo.sliderPos
+        this.minutesIn changeTo trackInfo.minutesIn
+        this.minutesOut changeTo trackInfo.minutesOut
+        this.secondsIn changeTo trackInfo.secondsIn
+        this.secondsOut changeTo trackInfo.secondsOut
+        this.sliderPos changeTo trackInfo.sliderPos
     }
 
     companion object {

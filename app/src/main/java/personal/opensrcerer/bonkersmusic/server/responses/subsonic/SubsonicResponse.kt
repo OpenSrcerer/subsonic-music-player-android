@@ -26,11 +26,12 @@ open class SubsonicResponse {
 
     private var requestTime: Long = 0
 
+    @Root(name = "error")
     class SubsonicError {
         @field:Attribute(name = "error", required = false)
         var code: Int = -1
 
-        @field:Attribute(name = "error", required = false)
+        @field:Attribute(name = "message", required = false)
         var message: String = ""
     }
 

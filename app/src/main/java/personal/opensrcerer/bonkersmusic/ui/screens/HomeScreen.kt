@@ -22,8 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
-import personal.opensrcerer.bonkersmusic.server.requests.RequestUtils
-import personal.opensrcerer.bonkersmusic.server.requests.media.StreamRequest
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.dto.Feature
 import personal.opensrcerer.bonkersmusic.ui.models.HomeScreenModel
@@ -31,7 +29,6 @@ import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet1
 import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet2
 import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet3
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
-import personal.opensrcerer.bonkersmusic.ui.util.Scheduler
 import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
 
 @ExperimentalFoundationApi
@@ -40,6 +37,8 @@ fun HomeScreen(
     navigator: NavController,
     model: HomeScreenModel = HomeScreenModel.getHomeModel()
 ) {
+    val currentSong = AudioPlayerService.getCurrentSong()
+
     Scaffold(
         topBar = { },
         content = {
@@ -59,9 +58,9 @@ fun HomeScreen(
                     )
                 )
                 CurrentlyPlayingText(
-                    "Lie",
-                    "Awake",
-                    "Dream Theater"
+                    currentSong.title,
+                    currentSong.album,
+                    currentSong.artist
                 )
                 SliderControls(model)
                 ButtonControls(
@@ -201,7 +200,7 @@ fun SliderControls(model: HomeScreenModel) {
                 Slider(
                     value = model.sliderPos.value(),
                     valueRange = 0f..1f,
-                    onValueChange = { model.sliderPos to it }
+                    onValueChange = { model.sliderPos changeTo it }
                 )
             }
         }
@@ -224,11 +223,10 @@ fun ButtonControls(
                     modifier = Modifier
                         .padding(start = 160.dp, end = 20.dp)
                         .clickable {
-                            val url = RequestUtils.getUrl(StreamRequest(
-                                "1793", "320"
-                            )).toString()
-                            AudioPlayerService.play(url)
-                            model.onSongPlayed()
+                            if (!AudioPlayerService.hasSong()) {
+                                return@clickable
+                            }
+                            AudioPlayerService.togglePause()
                         }
                 ) {
                     Icon(

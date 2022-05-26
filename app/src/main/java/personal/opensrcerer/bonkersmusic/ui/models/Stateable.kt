@@ -8,5 +8,5 @@ class Stateable<T>(t: T) {
 
     fun value(): T { return state.value }
 
-    infix fun to(t: T) { state.value = t }
+    infix fun changeTo(t: T) { state.value = t }
 }
