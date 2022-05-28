@@ -20,7 +20,7 @@ class ServerScreensModel {
 
     // --- Server Ingestion Form ---
     val hostnameContent = Stateable("")
-    val portContent = Stateable("")
+    val portContent = Stateable("80")
     val usernameContent = Stateable("")
     val passwordContent = Stateable("")
 

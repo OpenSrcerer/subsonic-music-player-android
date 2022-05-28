@@ -19,6 +19,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.common.TopBar
 import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
@@ -128,6 +129,7 @@ fun LoggedInServerView(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .clickable {
+                            AudioPlayerService.stopPlayer()
                             val screensModel = ServerScreensModel.getScreenModel()
                             screensModel.dumpServerDataToForms()
                             screensModel.removeServer(context)
@@ -146,6 +148,7 @@ fun LoggedInServerView(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .clickable {
+                            AudioPlayerService.stopPlayer()
                             val screensModel = ServerScreensModel.getScreenModel()
                             screensModel.clearFormData()
                             screensModel.removeServer(context)

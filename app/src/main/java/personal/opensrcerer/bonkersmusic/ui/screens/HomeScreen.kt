@@ -203,7 +203,12 @@ fun SliderControls(model: HomeScreenModel) {
                 Slider(
                     value = model.sliderPos.value(),
                     valueRange = 0f..1f,
-                    onValueChange = { model.sliderPos changeTo it }
+                    onValueChange = {
+                        model.onSliderChangeValueByUser(it)
+                    },
+                    onValueChangeFinished = {
+                        model.onSliderChangeValueFinishByUser()
+                    },
                 )
             }
         }

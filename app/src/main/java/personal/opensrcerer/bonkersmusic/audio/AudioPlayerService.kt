@@ -40,6 +40,7 @@ object AudioPlayerService {
             mediaPlayer = MediaPlayer()
         }
         mediaPlayer!!.setOnPreparedListener { player -> onPrepared(player) }
+        mediaPlayer!!.setOnCompletionListener { onFinish() }
 
         mediaPlayer!!.setDataSource(streamUrl)
         mediaPlayer!!.prepareAsync()
@@ -65,6 +66,13 @@ object AudioPlayerService {
 
     }
 
+    fun seekTo(float: Float) {
+        togglePause()
+        val seekValue = ((mediaPlayer?.duration ?: 0) * float).toInt()
+        mediaPlayer?.seekTo(seekValue)
+        togglePause()
+    }
+
     fun hasSong(): Boolean {
         return currentSong != null
     }
@@ -76,5 +84,9 @@ object AudioPlayerService {
     // Listeners
     private fun onPrepared(player: MediaPlayer) {
         player.start()
+    }
+
+    private fun onFinish() {
+        HomeScreenModel.getHomeModel().onFinish()
     }
 }

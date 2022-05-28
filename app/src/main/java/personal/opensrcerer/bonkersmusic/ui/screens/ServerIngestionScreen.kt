@@ -232,9 +232,10 @@ fun LoginScreen(
             modifier = Modifier
                 .clickable {
                     val screensModel = ServerScreensModel.getScreenModel()
+                    val port = screensModel.portContent.value()
                     val server = SubsonicServer(
                         host = screensModel.hostnameContent.value(),
-                        port = Integer.parseInt(screensModel.portContent.value()),
+                        port = Integer.parseInt(port.ifBlank { "80" }),
                         username = screensModel.usernameContent.value(),
                         password = screensModel.passwordContent.value(),
                         version = "1.15.0"

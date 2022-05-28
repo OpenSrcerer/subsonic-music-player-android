@@ -1,5 +1,6 @@
 package personal.opensrcerer.bonkersmusic.ui.models
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
 import personal.opensrcerer.bonkersmusic.ui.dto.TrackPositionInfo
@@ -19,10 +20,12 @@ class HomeScreenModel : ViewModel() {
     val songIsPlaying = Stateable(false)
 
     fun onPlayJob() {
-        scheduledJob?.cancel(true)
+        if (scheduledJob != null && !scheduledJob?.isCancelled!!) {
+            scheduledJob?.cancel(true)
+        }
         scheduledJob = Scheduler.executor.scheduleAtFixedRate(
             { setStateables(AudioPlayerService.getAudioData()) },
-            1000,
+            0,
             250,
             TimeUnit.MILLISECONDS
         )
@@ -33,6 +36,20 @@ class HomeScreenModel : ViewModel() {
     fun onPause() {
         scheduledJob?.cancel(true)
         songIsPlaying changeTo false
+    }
+
+    fun onFinish() {
+        songIsPlaying changeTo false
+    }
+
+    fun onSliderChangeValueByUser(slider: Float) {
+        scheduledJob?.cancel(true)
+        sliderPos changeTo slider
+    }
+
+    fun onSliderChangeValueFinishByUser() {
+        AudioPlayerService.seekTo(sliderPos.value())
+        onPlayJob()
     }
 
     private fun setStateables(trackInfo: TrackPositionInfo) {

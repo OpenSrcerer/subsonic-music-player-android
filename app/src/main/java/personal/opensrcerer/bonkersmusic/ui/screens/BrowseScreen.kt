@@ -225,10 +225,6 @@ fun BlockChild(
     child: Directory.Child
 ) {
     val albumTitle = child.title
-//        if (child.title.length > 11)
-//            "${child.title.subSequence(0, 11)}..."
-//        else
-//            child.title
 
     BoxWithConstraints(
         modifier = Modifier
@@ -303,7 +299,7 @@ fun ListedChildStyle(
                 }
 
                 AudioPlayerService.play(child)
-                navigator.navigateUp()
+                navigator.navigate("home")
             }
             .background(DeepBlue)
             .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
