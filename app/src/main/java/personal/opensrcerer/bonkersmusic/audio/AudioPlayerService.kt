@@ -1,8 +1,7 @@
 package personal.opensrcerer.bonkersmusic.audio
 
 import android.media.MediaPlayer
-import android.util.Log
-import personal.opensrcerer.bonkersmusic.server.requests.RequestUtils
+import personal.opensrcerer.bonkersmusic.server.client.RequestUtils
 import personal.opensrcerer.bonkersmusic.server.requests.media.StreamRequest
 import personal.opensrcerer.bonkersmusic.server.responses.browsing.Directory
 import personal.opensrcerer.bonkersmusic.ui.dto.TrackPositionInfo
@@ -40,10 +39,7 @@ object AudioPlayerService {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
-        mediaPlayer!!.setOnErrorListener { player, what, extra -> onPlayError(player) }
         mediaPlayer!!.setOnPreparedListener { player -> onPrepared(player) }
-        mediaPlayer!!.setOnCompletionListener { player -> onCompletion(player) }
-        mediaPlayer!!.setOnBufferingUpdateListener { player, what -> onBufferingUpdate(player, what) }
 
         mediaPlayer!!.setDataSource(streamUrl)
         mediaPlayer!!.prepareAsync()
@@ -57,6 +53,7 @@ object AudioPlayerService {
             mediaPlayer = null
         }
     }
+
     fun togglePause() {
         if (mediaPlayer?.isPlaying != true) {
             mediaPlayer?.start()
@@ -79,21 +76,5 @@ object AudioPlayerService {
     // Listeners
     private fun onPrepared(player: MediaPlayer) {
         player.start()
-    }
-
-    private fun onBufferingUpdate(player: MediaPlayer, progress: Int): Boolean {
-        Log.w("MediaBuffering", "$progress%")
-        if (progress > 25) {
-            player.start()
-        }
-        return false
-    }
-
-    private fun onCompletion(player: MediaPlayer) {
-
-    }
-
-    private fun onPlayError(player: MediaPlayer): Boolean {
-        return false
     }
 }

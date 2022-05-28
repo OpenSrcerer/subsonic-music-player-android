@@ -1,22 +1,29 @@
 package personal.opensrcerer.bonkersmusic.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.common.TopBar
+import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
+import personal.opensrcerer.bonkersmusic.ui.theme.LightRed
+import personal.opensrcerer.bonkersmusic.ui.theme.TextWhite
 
 @Composable
 fun ServerScreen(navigator: NavController) {
@@ -28,7 +35,7 @@ fun ServerScreen(navigator: NavController) {
                     .background(DeepBlue)
                     .fillMaxSize()
             ) {
-                GreetingSection()
+                LoggedInServerView()
             }
         },
         bottomBar = { BottomBar(navigator = navigator) }
@@ -36,33 +43,97 @@ fun ServerScreen(navigator: NavController) {
 }
 
 @Composable
-fun GreetingSection(
-    name: String = "Bonkers"
-) {
+fun LoggedInServerView() {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
+        modifier = Modifier.fillMaxHeight()
     ) {
         Column(
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Welcome to \$servername, $name",
-                style = MaterialTheme.typography.h2
+            val messages = listOf(
+                "Status: OK",
+                "API Version: 1.15.0"
             )
             Text(
-                text = "\$serverdescription",
-                style = MaterialTheme.typography.body1
+                text = "You are currently connected to:",
+                color = TextWhite,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
+            Text(
+                text = "bonkersmusic.onthewifi.com",
+                color = TextWhite,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 15.dp)
+            )
+            Divider(
+                color = TextWhite,
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+            )
+            Text(
+                buildAnnotatedString {
+                    messages.forEach {
+                        withStyle(style = ParagraphStyle(
+                            textIndent = TextIndent(restLine = 12.sp)
+                        )) {
+                            withStyle(style = SpanStyle(
+                                color = TextWhite,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 20.sp,
+                                letterSpacing = (-0.5).sp
+                            )
+                            ) {
+                                append("\u2022")
+                                append("\t\t")
+                                append(it)
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier.
+                        padding(top = 20.dp, bottom = 20.dp)
+            )
+            Divider(
+                color = TextWhite,
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .width(250.dp)
+                    .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Edit",
+                    color = TextWhite,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .clickable { }
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(ButtonBlue)
+                        .padding(vertical = 20.dp, horizontal = 15.dp)
+                )
+                Text(
+                    text = "Disconnect",
+                    color = TextWhite,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .clickable { }
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(LightRed)
+                        .padding(vertical = 20.dp, horizontal = 15.dp)
+                )
+            }
+
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = "Search",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
     }
 }

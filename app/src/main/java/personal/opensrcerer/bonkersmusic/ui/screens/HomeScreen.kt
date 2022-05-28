@@ -1,6 +1,5 @@
 package personal.opensrcerer.bonkersmusic.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,30 +11,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.skydoves.landscapist.coil.CoilImage
+import com.skydoves.landscapist.glide.GlideImage
 import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
+import personal.opensrcerer.bonkersmusic.server.client.RequestUtils
+import personal.opensrcerer.bonkersmusic.server.requests.media.CoverImageRequest
+import personal.opensrcerer.bonkersmusic.server.responses.browsing.Directory
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
-import personal.opensrcerer.bonkersmusic.ui.dto.Feature
 import personal.opensrcerer.bonkersmusic.ui.models.HomeScreenModel
-import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet1
-import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet2
-import personal.opensrcerer.bonkersmusic.ui.theme.BlueViolet3
+import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
-import personal.opensrcerer.bonkersmusic.ui.util.standardQuadFromTo
+import personal.opensrcerer.bonkersmusic.ui.theme.TextWhite
 
 @ExperimentalFoundationApi
 @Composable
 fun HomeScreen(
     navigator: NavController,
-    model: HomeScreenModel = HomeScreenModel.getHomeModel()
+    model: HomeScreenModel = HomeScreenModel.getHomeModel(),
+    songIsPlaying: Boolean = HomeScreenModel.getHomeModel().songIsPlaying.value()
 ) {
     val currentSong = AudioPlayerService.getCurrentSong()
 
@@ -47,16 +49,14 @@ fun HomeScreen(
                     .fillMaxSize()
                     .background(DeepBlue)
             )
+
+            if (!model.songLoaded.value()) {
+                NothingPlaying(navigator)
+                return@Scaffold
+            }
+
             Column {
-                CurrentlyPlayingCover(
-                    Feature(
-                        title = "What Would You Have Me Do?",
-                        R.drawable.ic_headphone,
-                        BlueViolet1,
-                        BlueViolet2,
-                        BlueViolet3
-                    )
-                )
+                CurrentlyPlayingCover(currentSong)
                 CurrentlyPlayingText(
                     currentSong.title,
                     currentSong.album,
@@ -64,8 +64,8 @@ fun HomeScreen(
                 )
                 SliderControls(model)
                 ButtonControls(
-                    model = model,
-                    buttons = listOf("PP")
+                    songIsPlaying = songIsPlaying,
+                    buttons = listOf("Play")
                 )
             }
         },
@@ -74,67 +74,59 @@ fun HomeScreen(
 }
 
 @Composable
-fun CurrentlyPlayingCover(
-    feature: Feature
+fun NothingPlaying(
+    navigator: NavController
 ) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Nothing playing right now...",
+                color = TextWhite,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 20.dp)
+            )
+            Text(
+                text = "Play some songs!",
+                color = TextWhite,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clickable { navigator.navigate("browse") }
+                    .align(Alignment.CenterHorizontally)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(ButtonBlue)
+                    .padding(vertical = 6.dp, horizontal = 15.dp)
+            )
+            GlideImage(
+                imageModel = R.raw.sleeping,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .size(300.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CurrentlyPlayingCover(currentSong: Directory.Child) {
     BoxWithConstraints(
         modifier = Modifier
             .padding(start = 20.dp, end = 20.dp)
             .aspectRatio(1f)
             .clip(RoundedCornerShape(10.dp))
-            .background(feature.darkColor)
     ) {
-        val width = constraints.maxWidth
-        val height = constraints.maxHeight
-
-        // Medium colored path
-        val mediumPoint1 = Offset(0f, height * 0.3f)
-        val mediumPoint2 = Offset(width * 0.1f, height * 0.35f)
-        val mediumPoint3 = Offset(width * 0.4f, height * 0.05f)
-        val mediumPoint4 = Offset(width * 0.75f, height * 0.7f)
-        val mediumPoint5 = Offset(width * 1.4f, -height.toFloat())
-
-        val mediumPath = Path().apply {
-            moveTo(mediumPoint1.x, mediumPoint1.y)
-            standardQuadFromTo(mediumPoint1, mediumPoint2)
-            standardQuadFromTo(mediumPoint2, mediumPoint3)
-            standardQuadFromTo(mediumPoint3, mediumPoint4)
-            standardQuadFromTo(mediumPoint4, mediumPoint5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-        }
-
-        // Light colored path
-        val lightPoint1 = Offset(0f, height * 0.35f)
-        val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
-        val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-        val lightPoint4 = Offset(width * 0.65f, height.toFloat())
-        val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
-
-        val lightPath = Path().apply {
-            moveTo(lightPoint1.x, lightPoint1.y)
-            standardQuadFromTo(lightPoint1, lightPoint2)
-            standardQuadFromTo(lightPoint2, lightPoint3)
-            standardQuadFromTo(lightPoint3, lightPoint4)
-            standardQuadFromTo(lightPoint4, lightPoint5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-        }
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            drawPath(
-                path = mediumPath,
-                color = feature.mediumColor
-            )
-            drawPath(
-                path = lightPath,
-                color = feature.lightColor
-            )
-        }
+        CoilImage(
+            imageModel = RequestUtils.getUrl(CoverImageRequest(currentSong.coverArt))
+        )
     }
 }
 
@@ -144,6 +136,17 @@ fun CurrentlyPlayingText(
     currentSongAlbum: String,
     currentSongArtist: String
 ) {
+    val songTitle =
+        if (currentSongTitle.length > 29)
+            "${currentSongTitle.subSequence(0, 29)}..."
+        else
+            currentSongTitle
+    val artistAndAlbum =
+        if ("$currentSongAlbum - $currentSongArtist".length > 29)
+            "${"$currentSongAlbum - $currentSongArtist".subSequence(0, 29)}..."
+        else
+            "$currentSongAlbum - $currentSongArtist"
+
     BoxWithConstraints(
         modifier = Modifier
             .padding(top = 20.dp)
@@ -156,13 +159,13 @@ fun CurrentlyPlayingText(
                 .padding(bottom = 70.dp)
         ) {
             Text(
-                text = currentSongTitle,
+                text = songTitle,
                 style = MaterialTheme.typography.h1,
                 lineHeight = 26.sp,
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "$currentSongAlbum - $currentSongArtist",
+                text = artistAndAlbum,
                 style = MaterialTheme.typography.h2,
                 lineHeight = 26.sp
             )
@@ -209,7 +212,7 @@ fun SliderControls(model: HomeScreenModel) {
 
 @Composable
 fun ButtonControls(
-    model: HomeScreenModel,
+    songIsPlaying: Boolean,
     buttons: List<String>
 ) {
     BoxWithConstraints(
@@ -230,7 +233,10 @@ fun ButtonControls(
                         }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_play),
+                        painter = if (songIsPlaying)
+                            painterResource(id = R.drawable.ic_pause)
+                        else
+                            painterResource(id = R.drawable.ic_play),
                         contentDescription = "Test",
                         tint = Color.White
                     )

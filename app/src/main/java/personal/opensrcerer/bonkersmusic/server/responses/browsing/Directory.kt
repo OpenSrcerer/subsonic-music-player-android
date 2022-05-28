@@ -6,6 +6,7 @@ import org.simpleframework.xml.ElementList
 import org.simpleframework.xml.Root
 import personal.opensrcerer.bonkersmusic.server.responses.enum.Unknown
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicResponse
+import personal.opensrcerer.bonkersmusic.ui.dto.BrowseScreenType
 
 data class Directory(
     @param:Element(name = "directory")
@@ -46,9 +47,19 @@ data class Directory(
 
         @field:Attribute(name = "track", required = false)
         var track: String = "?"
+
+        @field:Attribute(name = "isDir", required = false)
+        var isDir: Boolean = false
     }
 
     fun getChildren(): List<Child> {
         return directories.children ?: emptyList()
+    }
+
+    fun getType(): BrowseScreenType {
+        return if (getChildren().stream().allMatch { child -> child.isDir })
+            BrowseScreenType.ALBUMS
+        else
+            BrowseScreenType.CHILDREN
     }
 }

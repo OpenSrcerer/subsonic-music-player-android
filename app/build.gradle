@@ -72,6 +72,12 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test:3.4.14'
     implementation 'io.projectreactor:reactor-core:3.4.14'
 
+    // Glide
+    implementation "com.github.skydoves:landscapist-glide:1.5.2"
+
+    // Coil
+    implementation "com.github.skydoves:landscapist-coil:1.5.2"
+
     // Test Dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

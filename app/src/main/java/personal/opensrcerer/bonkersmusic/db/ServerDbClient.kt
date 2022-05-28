@@ -21,7 +21,7 @@ class ServerDbClient(
             dbHelper.readableDatabase
     }
 
-    fun getServer(): SubsonicServer {
+    fun getServer(): SubsonicServer? {
         if (writable) {
             throw IllegalAccessException("Database is write-only!")
         }
@@ -40,8 +40,12 @@ class ServerDbClient(
             null,
             null
         )
-        cursor.moveToNext()
 
+        if (cursor.count < 1) {
+            return null
+        }
+
+        cursor.moveToNext()
         var server: SubsonicServer
         with(cursor) {
             server = SubsonicServer(

@@ -3,7 +3,6 @@ package personal.opensrcerer.bonkersmusic.server.client
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import personal.opensrcerer.bonkersmusic.server.requests.RequestUtils
 import personal.opensrcerer.bonkersmusic.server.requests.subsonic.SubsonicRequest
 import personal.opensrcerer.bonkersmusic.server.requests.subsonic.VoidRequest
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicMonoCallback

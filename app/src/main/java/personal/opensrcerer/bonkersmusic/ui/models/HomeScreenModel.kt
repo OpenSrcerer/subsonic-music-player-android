@@ -15,18 +15,24 @@ class HomeScreenModel : ViewModel() {
     val secondsIn = Stateable("00")
     val secondsOut = Stateable("00")
     val sliderPos = Stateable(0f)
+    val songLoaded = Stateable(false)
+    val songIsPlaying = Stateable(false)
 
     fun onPlayJob() {
+        scheduledJob?.cancel(true)
         scheduledJob = Scheduler.executor.scheduleAtFixedRate(
             { setStateables(AudioPlayerService.getAudioData()) },
             1000,
             250,
             TimeUnit.MILLISECONDS
         )
+        songLoaded changeTo true
+        songIsPlaying changeTo true
     }
 
     fun onPause() {
         scheduledJob?.cancel(true)
+        songIsPlaying changeTo false
     }
 
     private fun setStateables(trackInfo: TrackPositionInfo) {

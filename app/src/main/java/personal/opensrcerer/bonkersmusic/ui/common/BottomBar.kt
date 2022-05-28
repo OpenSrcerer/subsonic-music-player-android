@@ -66,16 +66,13 @@ fun BottomBarItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable {
-            onItemClick()
-        }
+        modifier = Modifier
+            .clickable {
+                onItemClick()
+            }
+            .clip(RoundedCornerShape(10.dp))
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(if (isSelected) activeHighlightColor else Color.Transparent)
-        ) {
+        Box(contentAlignment = Alignment.Center) {
             Icon(
                 painter = painterResource(id = item.iconId),
                 contentDescription = item.title,
@@ -93,7 +90,7 @@ fun BottomBarItem(
 fun bottomMenuItems(): List<BottomBarButton> {
     return listOf(
         BottomBarButton("Home", R.drawable.ic_home, "home"),
-        BottomBarButton("Browse", R.drawable.ic_bubble, "browse"),
+        BottomBarButton("Browse", R.drawable.ic_search, "browse"),
         BottomBarButton("Explore", R.drawable.ic_moon, "explore"),
         BottomBarButton("Server", R.drawable.ic_music, "server")
     )

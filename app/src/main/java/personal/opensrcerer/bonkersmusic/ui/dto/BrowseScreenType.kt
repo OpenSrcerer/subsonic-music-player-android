@@ -1,7 +1,9 @@
 package personal.opensrcerer.bonkersmusic.ui.dto
 
-enum class BrowseScreenLocation {
+enum class BrowseScreenType {
+    LOADING,
     BROWSE,
     ALBUMS,
-    SONGS
+    CHILDREN,
+    NO_DATA
 }

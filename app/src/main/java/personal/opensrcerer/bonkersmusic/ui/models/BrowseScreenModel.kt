@@ -4,73 +4,78 @@ import androidx.lifecycle.ViewModel
 import personal.opensrcerer.bonkersmusic.server.client.SubsonicService
 import personal.opensrcerer.bonkersmusic.server.requests.browsing.DirectoryRequest
 import personal.opensrcerer.bonkersmusic.server.requests.browsing.IndexesRequest
-import personal.opensrcerer.bonkersmusic.server.responses.browsing.Directory
 import personal.opensrcerer.bonkersmusic.server.responses.browsing.Indexes
-import personal.opensrcerer.bonkersmusic.ui.dto.BrowseScreenLocation
+import personal.opensrcerer.bonkersmusic.ui.dto.BrowseScreenType
+import personal.opensrcerer.bonkersmusic.ui.dto.ChildPage
 import java.time.Duration
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 class BrowseScreenModel : ViewModel() {
 
-    // --- Context Keeper ---
-    val currentPage = Stateable(BrowseScreenLocation.BROWSE)
+    // --- Dir Browser ---
+    private val contextStack: Stack<ChildPage> = Stack()
+    val currPageType: Stateable<BrowseScreenType> = Stateable(BrowseScreenType.LOADING)
 
     // --- Main Browse Page ---
-    val noArtists = Stateable(false)
     val artists = Stateable(Indexes.empty())
-    val currArtistId = Stateable("")
-
-    // --- Album Page ---
-    val noAlbums = Stateable(false)
-    val albums = Stateable<List<Directory.Child>>(emptyList())
-    val currAlbumId = Stateable("")
-
-    // --- Song Page ---
-    val noSongs = Stateable(false)
-    val songs = Stateable<List<Directory.Child>>(emptyList())
 
     init {
         getArtists()
     }
 
-    fun getArtists() {
+    // --- Directory Navigation ---
+    fun currChildPage(): ChildPage? {
+        if (contextStack.empty()) {
+            return null
+        }
+        return contextStack.peek()
+    }
+
+    fun downDir(newDirId: String) {
+        currPageType changeTo BrowseScreenType.LOADING
+        val child = ChildPage(this)
+        getChildren(newDirId, child)
+        contextStack.push(child)
+    }
+
+    fun upDir() {
+        currPageType changeTo BrowseScreenType.LOADING
+        if (!contextStack.empty()) {
+            contextStack.pop()
+            if (!contextStack.empty()) {
+                currPageType changeTo (contextStack.peek().data?.getType() ?: BrowseScreenType.NO_DATA)
+            } else {
+                currPageType changeTo BrowseScreenType.BROWSE
+            }
+        }
+    }
+
+    // --- Interface With Server ---
+    private fun getArtists() {
         SubsonicService
             .request(IndexesRequest())
             .timeout(Duration.of(5000, ChronoUnit.MILLIS))
-            .doOnError { noArtists changeTo true }
+            .doOnError { currPageType changeTo BrowseScreenType.NO_DATA }
             .subscribe { idxs ->
-                noArtists changeTo false
                 artists changeTo idxs
+                currPageType changeTo BrowseScreenType.BROWSE
             }
     }
 
-    fun getAlbums() {
+    private fun getChildren(
+        dirId: String,
+        childPage: ChildPage
+    ) {
         SubsonicService
             .request(DirectoryRequest(mapOf(
-                Pair("id", currArtistId.value())
+                Pair("id", dirId)
             )))
             .timeout(Duration.of(5000, ChronoUnit.MILLIS))
-            .doOnError { noAlbums changeTo true }
-            .subscribe { dirs ->
-                if (!dirs.getChildren().isEmpty())
-                    albums changeTo dirs.getChildren()
-                else
-                    noAlbums changeTo true
-            }
-    }
-
-    fun getSongs() {
-        SubsonicService
-            .request(DirectoryRequest(mapOf(
-                Pair("id", currAlbumId.value())
-            )))
-            .timeout(Duration.of(5000, ChronoUnit.MILLIS))
-            .doOnError { noSongs changeTo true }
-            .subscribe { dirs ->
-                if (!dirs.getChildren().isEmpty())
-                    songs changeTo dirs.getChildren()
-                else
-                    noSongs changeTo true
+            .doOnError { currPageType changeTo BrowseScreenType.NO_DATA }
+            .subscribe {
+                childPage.onDataSuccess(it)
+                currPageType changeTo it.getType()
             }
     }
 

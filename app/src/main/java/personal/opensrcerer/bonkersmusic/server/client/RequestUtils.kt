@@ -1,10 +1,9 @@
-package personal.opensrcerer.bonkersmusic.server.requests
+package personal.opensrcerer.bonkersmusic.server.client
 
 import okhttp3.HttpUrl
-import personal.opensrcerer.bonkersmusic.server.client.cache.SubsonicCache
-import personal.opensrcerer.bonkersmusic.server.client.cache.SubsonicConfig
-import personal.opensrcerer.bonkersmusic.server.requests.search.Search3
+import personal.opensrcerer.bonkersmusic.db.dto.SubsonicServer
 import personal.opensrcerer.bonkersmusic.server.requests.subsonic.SubsonicRequest
+import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.concurrent.ThreadLocalRandom
@@ -12,9 +11,12 @@ import kotlin.streams.asSequence
 
 object RequestUtils {
     private val charPool : List<Char> = ('a'..'z') + ('0'..'9')
+    private val screenModel = ServerScreensModel.getScreenModel()
 
-    fun <T> getUrl(req: SubsonicRequest<T>): HttpUrl {
-        val config: SubsonicConfig = SubsonicCache.get("824772718800666645")!!
+    fun <T> getUrl(
+        req: SubsonicRequest<T>
+    ): HttpUrl {
+        val config: SubsonicServer = screenModel.currServer.value()!!
         val builder = HttpUrl.Builder()
             .scheme("http")
             .addPathSegment("rest")
@@ -24,14 +26,10 @@ object RequestUtils {
         return builder.build()
     }
 
-    fun searchForSingleSong(query: String): Search3 {
-        return Search3(mapOf(
-                Pair("query", query),
-                Pair("songCount", "1")
-        ))
-    }
-
-    private fun addConfigParams(builder: HttpUrl.Builder, config: SubsonicConfig) {
+    private fun addConfigParams(
+        builder: HttpUrl.Builder,
+        config: SubsonicServer
+    ) {
         builder.host(config.host)
             .port(config.port)
             .addQueryParameter("v", config.version)
@@ -39,7 +37,11 @@ object RequestUtils {
         addCredentials(builder, config, true)
     }
 
-    private fun addCredentials(builder: HttpUrl.Builder, config: SubsonicConfig, legacy: Boolean) {
+    private fun addCredentials(
+        builder: HttpUrl.Builder,
+        config: SubsonicServer,
+        legacy: Boolean
+    ) {
         builder.addQueryParameter("u", config.username)
 
         if (legacy) {

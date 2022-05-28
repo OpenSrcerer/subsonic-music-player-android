@@ -9,11 +9,10 @@ import androidx.navigation.*
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import personal.opensrcerer.bonkersmusic.ui.dto.ServerIngestionFlow
 import personal.opensrcerer.bonkersmusic.ui.models.BrowseScreenModel
-import personal.opensrcerer.bonkersmusic.ui.screens.BrowseScreen
-import personal.opensrcerer.bonkersmusic.ui.screens.ExploreScreen
-import personal.opensrcerer.bonkersmusic.ui.screens.HomeScreen
-import personal.opensrcerer.bonkersmusic.ui.screens.ServerScreen
+import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
+import personal.opensrcerer.bonkersmusic.ui.screens.*
 import personal.opensrcerer.bonkersmusic.ui.theme.BonkersMusicClientTheme
 
 @ExperimentalFoundationApi
@@ -24,19 +23,39 @@ class MainActivity : ComponentActivity() {
         setContent {
             BonkersMusicClientTheme {
                 val navController = rememberNavController()
+                val serverScreenModel = ServerScreensModel.getScreenModel()
+                var startDestination = "loading"
 
-                NavHost(navController, startDestination = "home") {
+                serverScreenModel.initServer(this, navController)
+                if (serverScreenModel.currServer.value() == null) {
+                    startDestination = "server"
+                }
+
+                NavHost(navController, startDestination) {
                     composable(route = "home") {
                         HomeScreen(navController)
                     }
                     composable(route = "browse") {
-                        BrowseScreen(navController)
+                        val model = BrowseScreenModel.getBrowseModel()
+                        BrowseScreen(
+                            navController,
+                            model,
+                            model.currPageType.value()
+                        )
                     }
                     composable(route = "explore") {
                         ExploreScreen(navController)
                     }
                     composable(route = "server") {
                         ServerScreen(navController)
+                    }
+                    composable(route = "loading") {
+                        ServerIngestionScreen(
+                            flow = ServerIngestionFlow.LOGIN
+                        )
+                    }
+                    composable(route = "welcome") {
+                        WelcomeScreen()
                     }
                 }
             }

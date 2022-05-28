@@ -14,6 +14,10 @@
         <entry key="app/src/main/res/drawable/ic_music.xml" value="0.1975" />
         <entry key="app/src/main/res/drawable/ic_play.xml" value="0.1975" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1975" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1485" />
+        <entry key="app/src/main/res/drawable/ic_svg.xml" value="0.1485" />
+        <entry key="app/src/main/res/drawable/ic_videocam.xml" value="0.1485" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2185" />
       </map>
     </option>
   </component>
