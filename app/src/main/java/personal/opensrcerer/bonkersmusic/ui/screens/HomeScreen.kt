@@ -97,7 +97,7 @@ fun NothingPlaying(
             Text(
                 text = "Play some songs!",
                 color = TextWhite,
-                fontSize = 14.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .clickable { navigator.navigate("browse") }

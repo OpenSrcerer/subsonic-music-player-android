@@ -91,7 +91,6 @@ fun bottomMenuItems(): List<BottomBarButton> {
     return listOf(
         BottomBarButton("Home", R.drawable.ic_home, "home"),
         BottomBarButton("Browse", R.drawable.ic_search, "browse"),
-        BottomBarButton("Explore", R.drawable.ic_moon, "explore"),
         BottomBarButton("Server", R.drawable.ic_music, "server")
     )
 }

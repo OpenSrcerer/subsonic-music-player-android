@@ -1,6 +1,6 @@
 package personal.opensrcerer.bonkersmusic.ui.dto
 
-enum class ServerIngestionFlow {
+enum class IngestionPageType {
     CONNECTING,
     FAILED,
     LOGIN

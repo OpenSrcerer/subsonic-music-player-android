@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -23,11 +24,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.skydoves.landscapist.glide.GlideImage
 import personal.opensrcerer.bonkersmusic.R
 import personal.opensrcerer.bonkersmusic.db.dto.SubsonicServer
 import personal.opensrcerer.bonkersmusic.ui.dto.ServerField
-import personal.opensrcerer.bonkersmusic.ui.dto.ServerIngestionFlow
+import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.theme.*
 
@@ -38,13 +40,20 @@ fun ServerIngestionScreen(
     portContent: String = ServerScreensModel.getScreenModel().portContent.value(),
     usernameContent: String = ServerScreensModel.getScreenModel().usernameContent.value(),
     passwordContent: String = ServerScreensModel.getScreenModel().passwordContent.value(),
-    server: SubsonicServer = ServerScreensModel.getScreenModel().currServer.value()!!,
-    flow: ServerIngestionFlow,
+    server: SubsonicServer? = ServerScreensModel.getScreenModel().currServer.value(),
+    pageType: IngestionPageType = ServerScreensModel.getScreenModel().pageType.value(),
+    serverReady: Boolean = ServerScreensModel.getScreenModel().serverReady.value(),
+    navController: NavController
 ) {
-    when (flow) {
-        ServerIngestionFlow.CONNECTING -> ConnectingScreen(server)
-        ServerIngestionFlow.FAILED -> FailedToConnectScreen()
-        ServerIngestionFlow.LOGIN -> LoginScreen(
+    if (serverReady) {
+        navController.navigate("home")
+        ServerScreensModel.getScreenModel().serverReady changeTo false
+    }
+
+    when (pageType) {
+        IngestionPageType.CONNECTING -> ConnectingScreen(server!!)
+        IngestionPageType.FAILED -> FailedToConnectScreen()
+        IngestionPageType.LOGIN -> LoginScreen(
             listOf(
                 ServerField(
                     "Hostname (ex: google.com)",
@@ -87,13 +96,13 @@ fun ConnectingScreen(
                     .padding(bottom = 20.dp)
             )
             Text(
-                text = "http://$server.host:$server.port",
+                text = "http://${server.host}:${server.port}",
                 color = TextWhite,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .padding(start = 60.dp, end = 60.dp, bottom = 20.dp)
             )
             GlideImage(
                 imageModel = R.raw.loading,
@@ -107,6 +116,8 @@ fun ConnectingScreen(
 
 @Composable
 fun FailedToConnectScreen() {
+    val context = LocalContext.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -118,7 +129,7 @@ fun FailedToConnectScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Failed to connect to server",
+                text = "Failed to connect to server!",
                 color = TextWhite,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
@@ -138,7 +149,11 @@ fun FailedToConnectScreen() {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            val screensModel = ServerScreensModel.getScreenModel()
+                            screensModel.pageType changeTo IngestionPageType.CONNECTING
+                            screensModel.testServerConnection()
+                        }
                         .clip(RoundedCornerShape(10.dp))
                         .background(ButtonBlue)
                         .padding(vertical = 20.dp, horizontal = 15.dp)
@@ -149,7 +164,12 @@ fun FailedToConnectScreen() {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            val screensModel = ServerScreensModel.getScreenModel()
+                            screensModel.removeServer(context)
+                            screensModel.dumpServerDataToForms()
+                            screensModel.pageType changeTo IngestionPageType.LOGIN
+                        }
                         .clip(RoundedCornerShape(10.dp))
                         .background(LightRed)
                         .padding(vertical = 20.dp, horizontal = 15.dp)
@@ -174,6 +194,8 @@ fun FailedToConnectScreen() {
 fun LoginScreen(
     fields: List<ServerField>
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -208,7 +230,19 @@ fun LoginScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .clickable { }
+                .clickable {
+                    val screensModel = ServerScreensModel.getScreenModel()
+                    val server = SubsonicServer(
+                        host = screensModel.hostnameContent.value(),
+                        port = Integer.parseInt(screensModel.portContent.value()),
+                        username = screensModel.usernameContent.value(),
+                        password = screensModel.passwordContent.value(),
+                        version = "1.15.0"
+                    )
+                    screensModel.upsertServer(context, server)
+                    screensModel.pageType changeTo IngestionPageType.CONNECTING
+                    screensModel.testServerConnection()
+                }
                 .clip(RoundedCornerShape(10.dp))
                 .background(ButtonBlue)
                 .padding(vertical = 20.dp, horizontal = 15.dp)
@@ -237,12 +271,15 @@ fun FormField(
             placeholder = { serverField.hint },
             value = serverField.content,
             onValueChange = { updateStr ->
-                if (
-                    serverField.type == ServerField.Type.NUMBER &&
-                    !(Regex("[0-9]*") matches updateStr)
+                val isNumberField = serverField.type == ServerField.Type.NUMBER
+                val regexNotMatches = !(Regex("[0-9]*") matches updateStr)
+
+                if (isNumberField && (regexNotMatches ||
+                  (updateStr.isNotEmpty() && Integer.parseInt(updateStr) > 65535))
                 ) {
                     return@TextField
                 }
+
                 serverField.updateContent(updateStr)
             },
             textStyle = TextStyle(

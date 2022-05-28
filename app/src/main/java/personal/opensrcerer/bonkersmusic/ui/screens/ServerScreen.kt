@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -20,13 +21,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.common.TopBar
+import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
+import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.LightRed
 import personal.opensrcerer.bonkersmusic.ui.theme.TextWhite
 
 @Composable
-fun ServerScreen(navigator: NavController) {
+fun ServerScreen(
+    navigator: NavController
+) {
     Scaffold(
         topBar = { TopBar(navigator = navigator) },
         content = {
@@ -35,7 +40,7 @@ fun ServerScreen(navigator: NavController) {
                     .background(DeepBlue)
                     .fillMaxSize()
             ) {
-                LoggedInServerView()
+                LoggedInServerView(navigator = navigator)
             }
         },
         bottomBar = { BottomBar(navigator = navigator) }
@@ -43,7 +48,11 @@ fun ServerScreen(navigator: NavController) {
 }
 
 @Composable
-fun LoggedInServerView() {
+fun LoggedInServerView(
+    navigator: NavController
+) {
+    val context = LocalContext.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxHeight()
@@ -52,9 +61,11 @@ fun LoggedInServerView() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
+            val server = ServerScreensModel.getScreenModel().currServer.value()
+            val serverRes = ServerScreensModel.getScreenModel().serverResponse.value()
             val messages = listOf(
-                "Status: OK",
-                "API Version: 1.15.0"
+                "Status: ${serverRes?.status}",
+                "Server Version: ${serverRes?.version}"
             )
             Text(
                 text = "You are currently connected to:",
@@ -65,7 +76,7 @@ fun LoggedInServerView() {
                     .align(Alignment.CenterHorizontally)
             )
             Text(
-                text = "bonkersmusic.onthewifi.com",
+                text = server?.host ?: "Unknown Server",
                 color = TextWhite,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
@@ -116,7 +127,14 @@ fun LoggedInServerView() {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            val screensModel = ServerScreensModel.getScreenModel()
+                            screensModel.dumpServerDataToForms()
+                            screensModel.removeServer(context)
+                            screensModel.pageType changeTo IngestionPageType.LOGIN
+                            navigator.navigate("ingestion")
+                            screensModel.serverResponse changeTo null
+                        }
                         .clip(RoundedCornerShape(10.dp))
                         .background(ButtonBlue)
                         .padding(vertical = 20.dp, horizontal = 15.dp)
@@ -127,13 +145,19 @@ fun LoggedInServerView() {
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .clickable { }
+                        .clickable {
+                            val screensModel = ServerScreensModel.getScreenModel()
+                            screensModel.clearFormData()
+                            screensModel.removeServer(context)
+                            screensModel.pageType changeTo IngestionPageType.LOGIN
+                            navigator.navigate("ingestion")
+                            screensModel.serverResponse changeTo null
+                        }
                         .clip(RoundedCornerShape(10.dp))
                         .background(LightRed)
                         .padding(vertical = 20.dp, horizontal = 15.dp)
                 )
             }
-
         }
     }
 }

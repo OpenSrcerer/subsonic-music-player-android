@@ -9,7 +9,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import personal.opensrcerer.bonkersmusic.ui.dto.ServerIngestionFlow
 import personal.opensrcerer.bonkersmusic.ui.models.BrowseScreenModel
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.screens.*
@@ -24,11 +23,11 @@ class MainActivity : ComponentActivity() {
             BonkersMusicClientTheme {
                 val navController = rememberNavController()
                 val serverScreenModel = ServerScreensModel.getScreenModel()
-                var startDestination = "loading"
+                var startDestination = "ingestion"
 
-                serverScreenModel.initServer(this, navController)
+                serverScreenModel.initServer(this)
                 if (serverScreenModel.currServer.value() == null) {
-                    startDestination = "server"
+                    startDestination = "welcome"
                 }
 
                 NavHost(navController, startDestination) {
@@ -43,19 +42,14 @@ class MainActivity : ComponentActivity() {
                             model.currPageType.value()
                         )
                     }
-                    composable(route = "explore") {
-                        ExploreScreen(navController)
-                    }
                     composable(route = "server") {
                         ServerScreen(navController)
                     }
-                    composable(route = "loading") {
-                        ServerIngestionScreen(
-                            flow = ServerIngestionFlow.LOGIN
-                        )
+                    composable(route = "ingestion") {
+                        ServerIngestionScreen(navController = navController)
                     }
                     composable(route = "welcome") {
-                        WelcomeScreen()
+                        WelcomeScreen(navController)
                     }
                 }
             }
