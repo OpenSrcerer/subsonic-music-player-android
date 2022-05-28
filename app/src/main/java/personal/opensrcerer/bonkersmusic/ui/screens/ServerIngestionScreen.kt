@@ -33,7 +33,6 @@ import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.theme.*
 
-
 @Composable
 fun ServerIngestionScreen(
     hostnameContent: String = ServerScreensModel.getScreenModel().hostnameContent.value(),

@@ -16,6 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +37,7 @@ import personal.opensrcerer.bonkersmusic.ui.dto.BrowseScreenType
 import personal.opensrcerer.bonkersmusic.ui.dto.ChildPage
 import personal.opensrcerer.bonkersmusic.ui.models.BrowseScreenModel
 import personal.opensrcerer.bonkersmusic.ui.theme.*
+import personal.opensrcerer.bonkersmusic.R
 
 @ExperimentalFoundationApi
 @Composable
@@ -239,7 +243,8 @@ fun BlockChild(
             modifier = Modifier
                 .padding(top = 50.dp)
                 .size(200.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            error = ImageVector.vectorResource(id = R.drawable.ic_folder)
         )
         Box(
             modifier = Modifier
