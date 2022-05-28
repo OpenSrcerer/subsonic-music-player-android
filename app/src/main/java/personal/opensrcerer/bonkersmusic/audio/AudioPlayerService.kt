@@ -1,3 +1,9 @@
+/*
+ * Made by Daniel Stefani for the Course Project in CS300, due June 7th 2022.
+ * This work is licensed under The Unlicense, feel free to use as you wish.
+ * All image assets belong to their respective owners. This project is for academic purposes only.
+ */
+
 package personal.opensrcerer.bonkersmusic.audio
 
 import android.media.MediaPlayer
@@ -7,6 +13,7 @@ import personal.opensrcerer.bonkersmusic.server.responses.browsing.Directory
 import personal.opensrcerer.bonkersmusic.ui.dto.TrackPositionInfo
 import personal.opensrcerer.bonkersmusic.ui.models.HomeScreenModel
 
+// Service to play audio on the device
 object AudioPlayerService {
 
     private var mediaPlayer: MediaPlayer? = null

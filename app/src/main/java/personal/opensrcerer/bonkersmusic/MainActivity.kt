@@ -1,3 +1,9 @@
+/*
+ * Made by Daniel Stefani for the Course Project in CS300, due June 7th 2022.
+ * This work is licensed under The Unlicense, feel free to use as you wish.
+ * All image assets belong to their respective owners. This project is for academic purposes only.
+ */
+
 package personal.opensrcerer.bonkersmusic
 
 import android.os.Bundle
@@ -21,6 +27,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BonkersMusicClientTheme {
+                // Variable home destination depending on server
                 val navController = rememberNavController()
                 val serverScreenModel = ServerScreensModel.getScreenModel()
                 var startDestination = "ingestion"
@@ -30,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = "welcome"
                 }
 
+                // Create all routres for navigation
                 NavHost(navController, startDestination) {
                     composable(route = "home") {
                         HomeScreen(navController)
@@ -56,6 +64,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Extension function to make Navigation Graphs for composables
     private fun NavGraphBuilder.composable(
         route: String,
         arguments: List<NamedNavArgument> = emptyList(),

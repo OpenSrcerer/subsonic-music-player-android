@@ -1,3 +1,9 @@
+/*
+ * Made by Daniel Stefani for the Course Project in CS300, due June 7th 2022.
+ * This work is licensed under The Unlicense, feel free to use as you wish.
+ * All image assets belong to their respective owners. This project is for academic purposes only.
+ */
+
 package personal.opensrcerer.bonkersmusic.ui.screens
 
 import androidx.compose.foundation.background
@@ -20,7 +26,6 @@ import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DarkerDeepBlue
-import personal.opensrcerer.bonkersmusic.ui.theme.LightRed
 import personal.opensrcerer.bonkersmusic.ui.theme.TextWhite
 
 @Composable

@@ -1,3 +1,9 @@
+/*
+ * Made by Daniel Stefani for the Course Project in CS300, due June 7th 2022.
+ * This work is licensed under The Unlicense, feel free to use as you wish.
+ * All image assets belong to their respective owners. This project is for academic purposes only.
+ */
+
 package personal.opensrcerer.bonkersmusic.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -16,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
