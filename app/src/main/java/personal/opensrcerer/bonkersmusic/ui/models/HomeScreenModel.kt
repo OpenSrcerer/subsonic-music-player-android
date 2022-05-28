@@ -1,6 +1,5 @@
 package personal.opensrcerer.bonkersmusic.ui.models
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
 import personal.opensrcerer.bonkersmusic.ui.dto.TrackPositionInfo
@@ -48,8 +47,12 @@ class HomeScreenModel : ViewModel() {
     }
 
     fun onSliderChangeValueFinishByUser() {
-        AudioPlayerService.seekTo(sliderPos.value())
-        onPlayJob()
+        val data = AudioPlayerService.seekTo(sliderPos.value())
+        if (songIsPlaying.value()) {
+            onPlayJob()
+        } else {
+            setStateables(data)
+        }
     }
 
     private fun setStateables(trackInfo: TrackPositionInfo) {

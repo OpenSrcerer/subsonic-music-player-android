@@ -66,11 +66,13 @@ object AudioPlayerService {
 
     }
 
-    fun seekTo(float: Float) {
+    fun seekTo(float: Float): TrackPositionInfo {
         togglePause()
         val seekValue = ((mediaPlayer?.duration ?: 0) * float).toInt()
         mediaPlayer?.seekTo(seekValue)
         togglePause()
+
+        return TrackPositionInfo(mediaPlayer?.duration ?: 0, seekValue)
     }
 
     fun hasSong(): Boolean {
