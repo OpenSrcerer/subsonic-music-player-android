@@ -23,6 +23,7 @@ import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
 import personal.opensrcerer.bonkersmusic.ui.common.BottomBar
 import personal.opensrcerer.bonkersmusic.ui.common.TopBar
 import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
+import personal.opensrcerer.bonkersmusic.ui.models.HomeScreenModel
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
 import personal.opensrcerer.bonkersmusic.ui.theme.ButtonBlue
 import personal.opensrcerer.bonkersmusic.ui.theme.DeepBlue
@@ -136,6 +137,7 @@ fun LoggedInServerView(
                             screensModel.pageType changeTo IngestionPageType.LOGIN
                             navigator.navigate("ingestion")
                             screensModel.serverResponse changeTo null
+                            HomeScreenModel.getHomeModel().songLoaded changeTo false
                         }
                         .clip(RoundedCornerShape(10.dp))
                         .background(ButtonBlue)
@@ -155,6 +157,7 @@ fun LoggedInServerView(
                             screensModel.pageType changeTo IngestionPageType.LOGIN
                             navigator.navigate("ingestion")
                             screensModel.serverResponse changeTo null
+                            HomeScreenModel.getHomeModel().songLoaded changeTo false
                         }
                         .clip(RoundedCornerShape(10.dp))
                         .background(LightRed)
