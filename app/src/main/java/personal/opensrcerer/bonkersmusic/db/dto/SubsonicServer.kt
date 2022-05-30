@@ -6,6 +6,8 @@
 
 package personal.opensrcerer.bonkersmusic.db.dto
 
+import java.net.URL
+
 // DTO that represents a subsonic server to be stored in the DB
 data class SubsonicServer(
     val id: Int = 1,
@@ -14,4 +16,13 @@ data class SubsonicServer(
     val username: String,
     val password: String,
     val version: String
-)
+) {
+    val url: URL by lazy {
+        val url = kotlin.runCatching {
+            URL("$host:$port")
+            }.recover {
+            URL("http://$host:$port")
+        }
+        url.getOrThrow()
+    }
+}

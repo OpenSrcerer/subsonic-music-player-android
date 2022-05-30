@@ -101,7 +101,7 @@ fun ConnectingScreen(
                     .padding(bottom = 20.dp)
             )
             Text(
-                text = "http://${server.host}:${server.port}",
+                text = server.url.toString(),
                 color = TextWhite,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
@@ -237,12 +237,12 @@ fun LoginScreen(
             modifier = Modifier
                 .clickable {
                     val screensModel = ServerScreensModel.getScreenModel()
-                    val port = screensModel.portContent.value()
+                    val port = screensModel.portContent.value().trim()
                     val server = SubsonicServer(
-                        host = screensModel.hostnameContent.value(),
-                        port = Integer.parseInt(port.ifBlank { "80" }),
-                        username = screensModel.usernameContent.value(),
-                        password = screensModel.passwordContent.value(),
+                        host = screensModel.hostnameContent.value().trim(),
+                        port = port.ifBlank { "80" }.toInt(),
+                        username = screensModel.usernameContent.value().trim(),
+                        password = screensModel.passwordContent.value().trim(),
                         version = "1.15.0"
                     )
                     screensModel.upsertServer(context, server)

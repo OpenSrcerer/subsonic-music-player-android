@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
 // Service to communicate with the Subsonic API
-object SubsonicService {
+object  SubsonicService {
     private val loggerKey: String? = SubsonicService::class.simpleName
     private val client: OkHttpClient
 

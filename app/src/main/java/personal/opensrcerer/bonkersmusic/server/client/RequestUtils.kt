@@ -24,7 +24,7 @@ object RequestUtils {
     ): HttpUrl {
         val config: SubsonicServer = screenModel.currServer.value()!!
         val builder = HttpUrl.Builder()
-            .scheme("http")
+            .scheme(config.url.protocol)
             .addPathSegment("rest")
             .addPathSegment(req.path.toString())
         addConfigParams(builder, config)
@@ -36,8 +36,8 @@ object RequestUtils {
         builder: HttpUrl.Builder,
         config: SubsonicServer
     ) {
-        builder.host(config.host)
-            .port(config.port)
+        builder.host(config.url.host)
+            .port(config.url.port)
             .addQueryParameter("v", config.version)
             .addQueryParameter("c", "android-client")
         addCredentials(builder, config, true)
