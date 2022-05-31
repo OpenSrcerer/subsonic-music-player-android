@@ -243,11 +243,15 @@ fun LoginScreen(
                         port = port.ifBlank { "80" }.toInt(),
                         username = screensModel.usernameContent.value().trim(),
                         password = screensModel.passwordContent.value().trim(),
-                        version = "1.15.0"
+                        version = "0.0.0"
                     )
                     screensModel.upsertServer(context, server)
                     screensModel.pageType changeTo IngestionPageType.CONNECTING
-                    screensModel.testServerConnection()
+                    screensModel.testServerConnection {
+                        it.run {
+                            screensModel.upsertServer(context, server.withVersion(toString()))
+                        }
+                    }
                 }
                 .clip(RoundedCornerShape(10.dp))
                 .background(ButtonBlue)

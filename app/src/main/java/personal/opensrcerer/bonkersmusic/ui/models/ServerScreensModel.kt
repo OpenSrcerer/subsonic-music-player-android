@@ -11,6 +11,7 @@ import personal.opensrcerer.bonkersmusic.db.ServerDbClient
 import personal.opensrcerer.bonkersmusic.db.dto.SubsonicServer
 import personal.opensrcerer.bonkersmusic.server.client.SubsonicService
 import personal.opensrcerer.bonkersmusic.server.requests.system.PingRequest
+import personal.opensrcerer.bonkersmusic.server.responses.subsonic.ApiVersion
 import personal.opensrcerer.bonkersmusic.server.responses.subsonic.SubsonicResponse
 import personal.opensrcerer.bonkersmusic.ui.dto.IngestionPageType
 import reactor.util.retry.Retry
@@ -85,7 +86,7 @@ class ServerScreensModel {
     }
 
     // --- Interface With Server ---
-    fun testServerConnection() {
+    fun testServerConnection(done: (apiVersion: ApiVersion?) -> Unit = {}) {
         if (currServer.value() == null) {
             return
         }
@@ -97,14 +98,17 @@ class ServerScreensModel {
             .timeout(Duration.of(5000, ChronoUnit.MILLIS))
             .doOnError {
                 pageType changeTo IngestionPageType.FAILED
+                done(null)
             }
             .subscribe { res ->
                 serverResponse changeTo res
                 if (res.error != null) {
                     pageType changeTo IngestionPageType.FAILED
+                    done(null)
                     return@subscribe
                 }
                 serverReady changeTo true
+                done(ApiVersion.parse(res.version!!))
             }
     }
 

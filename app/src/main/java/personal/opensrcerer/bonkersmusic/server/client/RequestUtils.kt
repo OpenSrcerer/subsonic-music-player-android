@@ -9,13 +9,14 @@ package personal.opensrcerer.bonkersmusic.server.client
 import okhttp3.HttpUrl
 import personal.opensrcerer.bonkersmusic.db.dto.SubsonicServer
 import personal.opensrcerer.bonkersmusic.server.requests.subsonic.SubsonicRequest
+import personal.opensrcerer.bonkersmusic.server.responses.subsonic.ApiVersion
 import personal.opensrcerer.bonkersmusic.ui.models.ServerScreensModel
-import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.asSequence
 
 object RequestUtils {
+    private val legacyApiVersion = ApiVersion(1, 12, 0)
     private val charPool : List<Char> = ('a'..'z') + ('0'..'9')
     private val screenModel = ServerScreensModel.getScreenModel()
 
@@ -40,7 +41,8 @@ object RequestUtils {
             .port(config.url.port)
             .addQueryParameter("v", config.version)
             .addQueryParameter("c", "android-client")
-        addCredentials(builder, config, true)
+        val legacy = ApiVersion.parse(config.version) <= legacyApiVersion
+        addCredentials(builder, config, legacy)
     }
 
     private fun addCredentials(
@@ -64,10 +66,8 @@ object RequestUtils {
         val md = MessageDigest.getInstance("MD5")
         val salt = getNextSalt()
         val saltedPassword = "$password$salt"
-        val hash = BigInteger(1, md.digest(
-            saltedPassword.toByteArray())
-        ).toString(16).padStart(32, '0')
-
+        val hash = md.digest(
+            saltedPassword.toByteArray()).toHex()
         return Pair(hash, salt)
     }
 
@@ -79,3 +79,5 @@ object RequestUtils {
             .joinToString("")
     }
 }
+
+fun ByteArray.toHex() = joinToString(separator = "") { byte -> "%02x".format(byte) }

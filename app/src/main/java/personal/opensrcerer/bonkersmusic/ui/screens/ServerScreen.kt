@@ -73,7 +73,7 @@ fun LoggedInServerView(
             val serverRes = ServerScreensModel.getScreenModel().serverResponse.value()
             val messages = listOf(
                 "Status: ${serverRes?.status}",
-                "Server Version: ${serverRes?.version}"
+                "API Version: ${serverRes?.version}"
             )
             Text(
                 text = "You are currently connected to:",

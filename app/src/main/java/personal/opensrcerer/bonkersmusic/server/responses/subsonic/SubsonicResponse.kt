@@ -9,6 +9,7 @@ package personal.opensrcerer.bonkersmusic.server.responses.subsonic
 import org.simpleframework.xml.Attribute
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
+import java.lang.IllegalArgumentException
 
 // Generic subsonic response class
 @Root(name = "subsonic-response")
@@ -48,5 +49,34 @@ open class SubsonicResponse {
 
     fun getTime() : Long {
         return requestTime
+    }
+}
+
+class ApiVersion(val major: Int, val minor: Int, val revision: Int) {
+
+    operator fun compareTo(otherVersion: ApiVersion): Int =
+        if(major > otherVersion.major) 1
+        else if(major < otherVersion.major) -1
+        else if(minor > otherVersion.minor) 1
+        else if(minor < otherVersion.minor) -1
+        else if(revision > otherVersion.revision) 1
+        else if(revision < otherVersion.revision) -1
+        else 0
+
+
+    override fun toString(): String {
+        return "$major.$minor.$revision"
+    }
+
+    companion object {
+        fun parse(version: String):ApiVersion {
+            val splitted = version.split(".")
+            if(splitted.size != 3) {
+                throw IllegalArgumentException("Fields should be 3. Not more, not less!")
+            }
+            return kotlin.runCatching {
+                ApiVersion(splitted[0].toInt(), splitted[1].toInt(), splitted[2].toInt())
+            }.getOrElse { throw IllegalArgumentException("Version is not parsable!") }
+        }
     }
 }

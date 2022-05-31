@@ -25,4 +25,13 @@ data class SubsonicServer(
         }
         url.getOrThrow()
     }
+
+    fun withVersion(version: String): SubsonicServer = SubsonicServer(
+        this.id,
+        this.host,
+        this.port,
+        this.username,
+        this.password,
+        version
+    )
 }
