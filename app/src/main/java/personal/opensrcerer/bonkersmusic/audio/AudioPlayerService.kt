@@ -70,7 +70,6 @@ object AudioPlayerService {
             HomeScreenModel.getHomeModel().onPause()
             mediaPlayer?.pause()
         }
-
     }
 
     fun seekTo(float: Float): TrackPositionInfo {

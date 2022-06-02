@@ -6,6 +6,7 @@
 
 package personal.opensrcerer.bonkersmusic.ui.models
 
+import android.hardware.SensorManager
 import androidx.lifecycle.ViewModel
 import personal.opensrcerer.bonkersmusic.audio.AudioPlayerService
 import personal.opensrcerer.bonkersmusic.ui.dto.TrackPositionInfo
@@ -23,6 +24,9 @@ class HomeScreenModel : ViewModel() {
     val sliderPos = Stateable(0f)
     val songLoaded = Stateable(false)
     val songIsPlaying = Stateable(false)
+
+    // --- Sensors ---
+    val currAccel = Stateable(SensorManager.GRAVITY_EARTH)
 
     fun onPlayJob() {
         if (scheduledJob != null && !scheduledJob?.isCancelled!!) {
